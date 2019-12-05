@@ -1,0 +1,5566 @@
+<html>
+	
+<head>
+	
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-128206321-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-128206321-1');
+</script>
+		
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	
+	<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+		
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async>
+</script>
+
+
+	
+	
+	
+<style>
+body {
+	
+	
+    max-width: 100%;
+    overflow-x: hidden;
+	overflow-y: hidden;
+	
+}
+	
+#myProgress {
+  width: 100%;
+  background-color: white;
+}
+
+#myBar {
+  width: 0%;
+  height: 30px;
+  background-color: blue;
+  text-align: center
+  line-height: 30px;
+  color: white;
+}
+	
+			.container { 
+  height: 200px;
+  position: relative;
+ 
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+</style>
+</head>
+	
+	
+	
+<body>
+	
+<!-- WHERE EVERYTHING SHOWS UP -->
+<div id='main' align='center'></div>
+	
+
+
+	
+<div id='cheats' align='center'></div>	
+	
+	<div>
+		<audio src='untitled.mp3' type='audio/mpeg' autoplay='autoplay'S loop='loop'  id='music'></div>
+<!-- WHERE EVERYTHING HAPPENS -->
+<script>
+	//Load map bar
+	
+	var hiddenMessage='';
+	var eggLocus=forestLocus;
+	var eggBeen=forestBeen;
+	var eggLook=forestLook;
+	var eggXSize=forestXSize;
+	var eggYSize=forestYSize;
+	var eggCover=forestCover;
+	var eggHere=forestHere;
+
+	
+	
+	//THE STANDARD VARIABLES (FOR WINDOW SIZE)
+	var w=window.innerWidth;
+	var h=window.innerHeight;
+	var minner=Math.min(w,h);
+	var didMove=0;
+	var holder;
+	
+	var GOD=0;
+	
+	var timeStart=null;
+	
+	
+	//SO WE CAN CHANGE WHAT SHOWS UP!
+	var Main=document.getElementById('main');
+	var Cheats=document.getElementById('cheats');
+	
+
+	
+	
+	
+	//VARIABLES TO DRAW ON THE SCREEN
+	var canvas;
+	var width;
+	var height;
+	var ctx;
+	var elemLeft;
+	var elemTop;
+	var turtQuestion;
+	var turtBtn;
+	var turtIn;
+	var turtA;
+	var turtB;
+	var turtC;
+	var turtD;
+	var turtValue;
+	var turtBottom;
+	var frameRate;
+	var worldShake;
+	
+	var dragonQuestion;
+	var dragonBottom;
+	
+	var animateId=null;
+	var timeBeast=null;
+	var turtTime1=null;
+	var turtTime2=null;
+	var turtTime3=null;
+	var turtTime4=null;
+	var dragonTime1=null;
+	var dragonTime2=null;
+	var dragonTime3=null;
+	var dragonTime4=null;
+	var dragonTimer=null;
+	var timeHelp=null;
+	var wizzyHelloTimer=null;
+	var wizzyDangerTimer=null;
+	var wizzyTimer=null;
+	var wizzyTimer2=null;
+	
+	var timeList=['timeBeast','turtTime1','turtTime2','turtTime3','turtTime4','dragonTimer','wizzyHelloTimer','wizzyDangerTimer','wizzyTimer','wizzyTimer2'];
+	
+
+	var currentScreen=[];
+	
+	var cheatInX;
+	var cheatInY;
+	var cheatBtn;
+
+	
+	
+	//VARIBLES TO KNOW WHAT TO DO WHEN RESIZING
+	// 0=TITLE SCREEN
+	// 1=BAG CHOOSE SCREEN
+	// 2=WELCOME TO THE FOREST SCREEN
+	// 3=TRAINING LAND
+	// 4=CHOOSE IN GAME OPTIONS
+	// 5=REAL GAME
+	// 6=IN TEST MODE
+	var when=0;
+	var whenDo=['','chooseBag()','welcome()','trainingLand()','inGameOptions()','inGame()','inTest()'];
+	var inBag=0;
+	var inMap=0;
+	var inAttackBeast=0;
+	var inAttackTurt=0;
+	var inAttackDragon=0;
+	
+	//IN GAME VARIABLES FOR CUSTOM GAMEPLAY
+	var whichBag;
+	var whichLevel;
+	var whichQuestion=[];
+	var Times='Math.floor((Math.random()*11)+2)';
+	var Add='Math.floor((Math.random()*100)+1)';
+
+	
+	//HEALTH VARIABLE
+	var health=3;
+	var dragonHealth=5;
+	
+	//IN GAME VARIABLES FOR LOCATION
+	var whereAt=[0,0];
+	var whereBeen=[];
+	var Locus=[];
+	var theLook=[];
+	var mapXSize;
+	var mapYSize;
+	var mapCover;
+	var mapHere;
+	var whichMap;
+	
+	//SAVED DATA FOR IN GAME
+	var forestBeen=[[0,1,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0]];
+	var Locus0=[[1,0,1,0],[1,0,1,1],[0,0,0,1],[1,0,1,0],[1,0,1,1],[1,0,1,1],[0,0,1,1]];
+	var Locus1=[[1,1,1,0],[0,1,1,1],[0,0,0,0],[1,1,1,0],[1,1,1,1],[1,1,1,1],[0,1,1,1]];
+	var Locus2=[[1,1,1,0],[1,1,1,1],[1,0,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1],[0,1,1,1]];
+	var Locus3=[[1,1,1,0],[1,1,1,1],[1,1,1,1],[1,1,0,1],[1,1,1,1],[1,1,1,1],[0,1,1,1]];
+	var Locus4=[[1,1,1,0],[1,1,1,1],[0,1,0,1],[1,0,1,0],[1,1,1,1],[1,1,1,1],[0,1,0,1]];
+	var Locus5=[[1,1,1,0],[0,1,1,1],[0,0,0,0],[1,1,0,0],[1,1,0,1],[0,1,0,1],[0,0,0,0]];
+	var Locus6=[[1,1,0,0],[1,1,0,1],[0,0,0,1],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+	var forestLocus=[Locus0,Locus1,Locus2,Locus3,Locus4,Locus5,Locus6];
+	var Look0=[['waterLeft','waterBottom','waterBottomLeft','treeRightSingle'],['pathAcross','waterLeft','treeRightHeavy','welocmeSign'],['bayTwo'],['waterLeft','waterBottom','waterBottomLeft','treeRightOnly'],['waterLeft','treeRightHeavy'],['waterLeft','treeRightLite'],['waterLeft','waterTop','waterTopLeft','treeRightHeavy']];
+	var Look1=[['waterBottom','treeLeftSingle'],['pathAcross','waterTop','treeLeftLite','treeRightLite'],['waterLeft','pathUpperLeftDiag'],['pathUpperRight','waterBottom','treeLeftSingle'],['pathRight','treeLeftLite'],['treeLeftSuperHeavy','treeRightOnly'],['waterTop','treeLeftSuperHeavy','treeRightOnly']];
+	var Look2=[['waterBottom','treeRightSingle'],['pathAcross','treeLeftHeavy'],['treeRightHeavy','waterLeft'],['pathLowS'],['pathS','treeRightLite'],['treeRightHeavy','treeLeftOnly'],['waterTop','treeLeftSingle','treeRightHeavy']];
+	var Look3=[['waterBottom','treeLeftSingle'],['pathAcross','treeRightHeavy'],['pathUpperLeftDiag','treeLeftLite'],['mountainFarRight','pathLeftSmallDiag'],['pathLowerAcross','treeLeftHeavy'],['pathUpperRight','treeLeftSuperHeavy'],['pathRightTite','waterTop','treeLeftLite']];
+	var Look4=[['waterBottom','treeRightOnly'],['pathOverUp','treeLeftLite','treeRightLite'],['pathLeftTite','waterRight','boulderTop'],['mountainRange'],['pathLeftSmallDiag','treeRightOnly'],['pathAcross','treeRightHeavy'],['castle']];
+	var Look5=[['waterBottom','treeLeftOnly','treeRightLite'],['waterTop','treeLeftHeavy','treeRightHeavy'],[],['outOfMountains'],['pathStraight','waterRight','treeLeftSingle'],['pathLeftTite','waterRight','waterTop','treeLeftLite'],[]];
+	var Look6=[['waterRight','waterBottom','waterBottomRight','treeLeftSingle'],['treeLeftSuperHeavy','waterRight'],['bayOne'],[],[],[],[]];
+	var forestLook=[Look0,Look1,Look2,Look3,Look4,Look5,Look6];
+	var bag=[0,0,0,0];
+	var forestXSize=7;
+	var forestYSize=8;
+	var forestCover='fb';
+	var forestHere='fHere';
+	var gameMessage='';
+	var gameMessage2='';
+	var gameMessage3='';
+	var beastCount=[0,0,0];
+	var turtCount=[0,0];
+	var dragonCount=0;
+	var wasHealth;
+	var animateList=[];
+	var animateAlways=[];
+	var animateFlash=[];
+	var animateCode;
+	var aCounter=0;
+	
+	
+	//SAVED DATA FOR TRAINING
+	var trainingBeen=[[1,0],[0,0]];
+	var trainingLocus=[[[1,0,1,0],[0,0,1,1]],[[1,1,0,0],[0,1,0,1]]];
+	var trainingLook=[[['waterLeft','pathStraight','treeRightLite'],['waterLeft','pathStraight','waterTop','treeRightHeavy']],[['waterRight','treeLeftHeavy'],['waterTop','waterRight','treeLeftLite','bushLeft']]];
+	var trainingXSize=2;
+	var trainingYSize=2;
+	var trainingCover='tb';
+	var trainingHere='tHere';
+	var trainingMessage=['','','need bunny','training','need turt'];
+	var wasPadUsed=0;
+	
+	
+	var theImages=0;
+	
+	Main.innerHTML='<div class="container"><div class="center" align="center"><h3>Math Wizard is LOADING ... </h3></div></div><div class="container"><div class="center"><div class="spinner-border text-primary" style="width: 8rem; height: 8rem;" role="status"><span class="sr-only">Math Wizard is LOADING...  please wait...</span></div></div></div><div><br> <h3>Please Wait ...</h3> </div>';
+
+	
+	//THE IMAGES TO LOAD FOR FIRST SCREENS
+	var levelOptionsLoaded=0;
+	var levelOptions=new Image();
+	levelOptions.src='img/Level.png';
+	levelOptions.onload=function(){
+		levelOptionsLoaded=1;
+		theImages++;
+	}
+	var bagOptionsLoaded=0;
+	var bagOptions=new Image();
+	bagOptions.src='img/choose1.png';
+	bagOptions.onload=function(){
+		bagOptionsLoaded=1;
+		theImages++;
+	}
+	
+	var welcomeToForestLoaded=0;
+	var welcomeToForest=new Image();
+	welcomeToForest.src='img/welcome.png';
+	welcomeToForest.onload=function(){
+		welcomeToForestLoaded=1;
+		theImages++;
+	}
+	
+	
+	
+	//MAIN WINDOW IMAGES
+	var topBtnLoaded=0;
+	var topBtn=new Image();
+	topBtn.src='img/top_btn.png';
+	topBtn.onload=function(){
+		topBtnLoaded=1;
+		theImages++;
+	
+	var health3Loaded=0;
+	var health3=new Image();
+	health3.src='img/3_health.png';
+	health3.onload=function(){
+		health3Loaded=1;
+		theImages++;
+	}
+	var health2Loaded=0;
+	var health2=new Image();
+	health2.src='img/2_health.png';
+	health2.onload=function(){
+		health2Loaded=1;
+		theImages++;
+	}
+	var health1Loaded=0;
+	var health1=new Image();
+	health1.src='img/1_health.png';
+	health1.onload=function(){
+		health1Loaded=1;
+		theImages++;
+	}
+	var rgtBtnLoaded=0;
+	var rgtBtn=new Image();
+	rgtBtn.src='img/right_btn.png';
+	rgtBtn.onload=function(){
+		rgtBtnLoaded=1;
+		theImages++;
+	}
+	var leftBtnLoaded=0;
+	var lftBtn=new Image();
+	lftBtn.src='img/left_btn.png';
+	lftBtn.onload=function(){
+		lftBtnLoaded=1;
+		theImages++;
+	}
+	var dwnBtnLoaded=0;
+	var dwnBtn=new Image();
+	dwnBtn.src='img/down_btn.png';
+	dwnBtn.onload=function(){
+		dwnBtnLoaded=1;
+		theImages++;
+	}
+	var upBtnLoaded=0;
+	var upBtn=new Image();
+	upBtn.src='img/up_btn.png';
+	upBtn.onload=function(){
+		upBtnLoaded=1;
+		theImages++;
+	
+	
+	//BAG IMAGES
+	var greenBagLoaded=0;
+	var greenBag=new Image();
+	greenBag.src='img/Bag_green.png';
+	greenBag.onload=function(){
+		greenBagLoaded=1;
+		theImages++;
+	}
+	var purpBagLoaded=0;
+	var purpBag=new Image();
+	purpBag.src='img/Bag_purp.png';
+	purpBag.onload=function(){
+		purpBagLoaded=1;
+		theImages++;
+	
+	
+	
+	//IMAGES TO LOAD FOR DRAWING WORLD
+	var welocmeSignLoaded=0;
+	var welocmeSign=new Image();
+	welocmeSign.src='img/forest/00welcome.png';
+	welocmeSign.onload=function(){
+		welocmeSignLoaded=1;
+		theImages++;
+	}
+	var bushLeftLoaded=0;
+	var bushLeft=new Image();
+	bushLeft.src='img/forest/bush_left_bottom.png';
+	bushLeft.onload=function(){
+		bushLeftLoaded=1;
+		theImages++;
+	}
+	var outOfMountainsLoaded=0;
+	var outOfMountains=new Image();
+	outOfMountains.src='img/forest/OutOfMountains.png';
+	outOfMountains.onload=function(){
+		outOfMountainsLoaded=1;
+		theImages++;
+	}
+	var mountainRangeLoaded=0;
+	var mountainRange=new Image();
+	mountainRange.src='img/forest/MountainRange.png';
+	mountainRange.onload=function(){
+		mountainRangeLoaded=1;
+		theImages++;
+	}
+	var mountainFarRightLoaded=0;
+	var mountainFarRight=new Image();
+	mountainFarRight.src='img/forest/Mountain far right.png';
+	mountainFarRight.onload=function(){
+		mountainFarRightLoaded=1;
+		theImages++;
+	}
+	var boulderTopLoaded=0;
+	var boulderTop=new Image();
+	boulderTop.src='img/forest/Boulder.png';
+	boulderTop.onload=function(){
+		boulderTopLoaded=1;
+		theImages++;
+	}
+	var bayOneLoaded=0;
+	var bayOne=new Image();
+	bayOne.src='img/forest/Bay1.png';
+	bayOne.onload=function(){
+		bayOneLoaded=1;
+		theImages++;
+	}
+	var bayTwoLoaded=0;
+	var bayTwo=new Image();
+	bayTwo.src='img/forest/Bay2.png';
+	bayTwo.onload=function(){
+		bayTwoLoaded=1;
+		theImages++;
+	}
+	var castleLoaded=0;
+	var castle=new Image();
+	castle.src='img/forest/Castle.png';
+	castle.onload=function(){
+		castleLoaded=1;
+		theImages++;
+	}
+	var pathLeftTiteLoaded=0;
+	var pathLeftTite=new Image();
+	pathLeftTite.src='img/forest/PathLeftTite.png';
+	pathLeftTite.onload=function(){
+		pathLeftTiteLoaded=1;
+		theImages++;
+	}
+	var pathRightTiteLoaded=0;
+	var pathRightTite=new Image();
+	pathRightTite.src='img/forest/PathRightTite.png';
+	pathRightTite.onload=function(){
+		pathRightTiteLoaded=1;
+		theImages++;
+	}
+	var pathLowSLoaded=0;
+	var pathLowS=new Image();
+	pathLowS.src='img/forest/PathLowS.png';
+	pathLowS.onload=function(){
+		pathLowSLoaded=1;
+		theImages++;
+	
+	var pathUpperRightLoaded=0;
+	var pathUpperRight=new Image();
+	pathUpperRight.src='img/forest/PathUpperRight.png';
+	pathUpperRight.onload=function (){
+		pathUpperRightLoaded=1;
+		theImages++;
+	}
+	var pathSLoaded=0;
+	var pathS=new Image();
+	pathS.src='img/forest/Paths.png';
+	pathS.onload=function(){
+		pathSLoaded=1;
+		theImages++;
+	}
+	var pathLowerAcrossLoaded=0;
+	var pathLowerAcross=new Image();
+	pathLowerAcross.src='img/forest/Pathloweracross.png';
+	pathLowerAcross.onload=function(){
+		pathLowerAcrossLoaded=1;
+		theImages++;
+	}
+	var pathUpperLeftDiagLoaded=0;
+	var pathUpperLeftDiag=new Image();
+	pathUpperLeftDiag.src='img/forest/Pathupperleftdiag.png';
+	pathUpperLeftDiag.onload=function(){
+		pathUpperLeftDiagLoaded=1;
+		theImages++;
+	}
+	var pathLeftSmallDiagLoaded=0;
+	var pathLeftSmallDiag=new Image();
+	pathLeftSmallDiag.src='img/forest/Pathleftsmalldiag.png';
+	pathLeftSmallDiag.onload=function(){
+		pathLeftSmallDiagLoaded=1;
+		theImages++;
+	}
+	var pathLeftDiagLoaded=0;
+	var pathLeftDiag=new Image();
+	pathLeftDiag.src='img/forest/Pathleftdiag.png';
+	pathLeftDiag.onload=function(){
+		pathLeftDiagLoaded=1;
+		theImages++;
+	}
+	var pathBottomLeftLoaded=0;
+	var pathBottomLeft=new Image();
+	pathBottomLeft.src='img/forest/Pathbottomleft.png';
+	pathBottomLeft.onload=function(){
+		pathBottomLeftLoaded=1;
+		theImages++;
+	
+	var pathOverUpLoaded=0;
+	var pathOverUp=new Image();
+	pathOverUp.src='img/forest/Pathoverup.png';
+	pathOverUp.onload=function(){
+		pathOverUpLoaded=1;
+		theImages++;
+	}
+	var pathAcrossLoaded=0;
+	var pathAcross=new Image();
+	pathAcross.src='img/forest/path_across.png';
+	pathAcross.onload=function(){
+		pathAcrossLoaded=1;
+		theImages++;
+	}
+	var pathStraightLoaded=0;
+	var pathStraight=new Image();
+	pathStraight.src='img/forest/path_straight.png';
+	pathStraight.onload=function(){
+		pathStraightLoaded=1;
+		theImages++;		
+	}
+	var pathRightLoaded=0;
+	var pathRight=new Image();
+	pathRight.src='img/forest/path_right.png';
+	pathRight.onload=function(){
+		pathRightLoaded=1;	
+		theImages++;
+	}
+	var pathLeftLoaded=0;
+	var pathLeft=new Image();
+	pathLeft.src='img/forest/path_left.png';
+	pathLeft.onload=function(){
+		pathLeftLoaded=1;	
+		theImages++;
+	}
+	var treeLeftOnlyLoaded=0;
+	var treeLeftOnly=new Image();
+	treeLeftOnly.src='img/forest/TreeLeftOnly.png';
+	treeLeftOnly.onload=function(){
+		treeLeftOnlyLoaded=1;
+		theImages++;
+	}
+	var treeRightOnlyLoaded=0;
+	var treeRightOnly=new Image();
+	treeRightOnly.src='img/forest/TreeRightOnly.png';
+	treeRightOnly.onload=function(){
+		treeRightOnlyLoaded=1;
+		theImages++;
+	}
+	var treeRightSingleThickLoaded=0;
+	var treeRightSingleThick=new Image();
+	treeRightSingleThick.src='img/forest/TreeRightSingleThick.png';
+	treeRightSingleThick.onload=function(){
+		treeRightSingleThickLoaded=1;
+		theImages++;
+	
+	var treeLeftLiteTopLoaded=0;
+	var treeLeftLiteTop=new Image();
+	treeLeftLiteTop.src='img/forest/TreeLeftLiteTop.png';
+	treeLeftLiteTop.onload=function(){
+		treeLeftLiteTopLoaded=1;
+		theImages++;
+	}
+	
+	
+	
+	
+	var treeLeftSingleLoaded=0;
+	var treeLeftSingle=new Image();
+	treeLeftSingle.src='img/forest/TreeLeftSingle.png';
+	treeLeftSingle.onload=function(){
+		treeLeftSingleLoaded=1;
+		theImages++;
+	}
+	var treeRightSingleLoaded=0;
+	var treeRightSingle=new Image();
+	treeRightSingle.src='img/forest/TreeRightSingle.png';
+	treeRightSingle.onload=function (){
+		treeRightSingleLoaded=1;
+		theImages++;
+	}
+	var treeLeftSuperHeavyLoaded=0;
+	var treeLeftSuperHeavy=new Image();
+	treeLeftSuperHeavy.src='img/forest/TreeLeftSuperHeavy.png';
+	treeLeftSuperHeavy.onload=function(){
+		treeLeftSuperHeavyLoaded=1;
+		theImages++;
+	}
+	var treeLeftHeavyLoaded=0;
+	var treeLeftHeavy=new Image();
+	treeLeftHeavy.src='img/forest/tree_left_heavy.png';
+	treeLeftHeavy.onload=function(){
+		treeLeftHeavyLoaded=1;
+		theImages++;
+	
+	var treeLeftLiteLoaded=0;
+	var treeLeftLite=new Image();
+	treeLeftLite.src='img/forest/tree_left_lite.png';
+	treeLeftLite.onload=function(){
+		treeLeftLiteLoaded=1;
+		theImages++;
+	}
+	var treeRightHeavyLoaded=0;
+	var treeRightHeavy=new Image();
+	treeRightHeavy.src='img/forest/tree_right_heavy.png';
+	treeRightHeavy.onload=function(){
+		treeRightHeavyLoaded=1;
+		theImages++;
+	}
+	var treeRightLiteLoaded=0;
+	var treeRightLite=new Image();
+	treeRightLite.src='img/forest/tree_right_lite.png';
+	treeRightLite.onload=function(){
+		treeRightLiteLoaded=1;
+		theImages++;
+	}
+	var waterTopLeftLoaded=0;
+	var waterTopLeft=new Image();
+	waterTopLeft.src='img/forest/WaterTopLeft.png';
+	waterTopLeft.onload=function(){
+		waterTopLeftLoaded=1;
+		theImages++;
+	
+	var waterBottomLeftLoaded=0;
+	var waterBottomLeft=new Image();
+	waterBottomLeft.src='img/forest/WaterBottomLeft.png';
+	waterBottomLeft.onload=function(){
+		waterBottomLeftLoaded=1;
+		theImages++;
+	}
+	var waterBottomRightLoaded=0;
+	var waterBottomRight=new Image();
+	waterBottomRight.src='img/forest/WaterBottomRight.png';
+	waterBottomRight.onload=function(){
+		waterBottomRightLoaded=1;
+		theImages++;
+	}
+	var waterBottomLoaded=0;
+	var waterBottom=new Image();
+	waterBottom.src='img/forest/WaterBottom.png';
+	waterBottom.onload=function(){
+		waterBottomLoaded=1;
+		theImages++;
+	}
+	var waterLeftLoaded=0;
+	var waterLeft=new Image();
+	waterLeft.src='img/forest/water_left.png';
+	waterLeft.onload=function(){
+		waterLeftLoaded=1;
+		theImages++;
+	}
+	var waterRightLoaded=0;
+	var waterRight=new Image();
+	waterRight.src='img/forest/water_right.png';
+	waterRight.onload=function(){
+		waterRightLoaded=1;
+		theImages++;
+	
+	var waterTopLoaded=0;
+	var waterTop=new Image();
+	waterTop.src='img/forest/water_top.png';
+	waterTop.onload=function(){
+		waterTopLoaded=1;
+		theImages++;
+	}
+	var grass1Loaded=0;
+	var grass1=new Image();
+	grass1.src='img/forest/grass1.png';
+	grass1.onload=function (){
+		grass1Loaded=1;
+	}
+	var grass2Loaded=0;
+	var grass2=new Image();
+	grass2.src='img/forest/grass2.png';
+	grass2.onload=function (){
+		grass2Loaded=1;
+		theImages++;
+	}
+	var grass3Loaded=0;
+	var grass3=new Image();
+	grass3.src='img/forest/grass3.png';
+	grass3.onload=function (){
+		grass3Loaded=1;
+		theImages++;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//MAP IMAGES
+	var mapCompassLoaded=0;
+	var mapCompass=new Image();
+	mapCompass.src='img/map_compass.png';
+	mapCompass.onload=function(){
+		mapCompassLoaded=1;
+	
+	var mapBackBtnLoaded=0;
+	var mapBackBtn=new Image();
+	mapBackBtn.src='img/training/training_map/back_map.png';
+	mapBackBtn.onload=function(){
+		mapBackBtnLoaded=1;
+	}
+	//FOR TRAINING
+	var trainMapLoaded=0;
+	var trainMap=new Image();
+	trainMap.src='img/training/training_map/training_map.png';
+	trainMap.onload=function(){
+		trainMapLoaded=1;
+	}
+	var tb01Loaded=0;
+	var tb01=new Image();
+	tb01.src='img/training/training_map/tb_01.png';
+	tb01.onload=function(){
+		tb01Loaded=1;
+	}
+	var tb10Loaded=0;
+	var tb10=new Image();
+	tb10.src='img/training/training_map/tb_10.png';
+	tb10.onload=function(){
+		tb10Loaded=1;
+	}
+	var tb11Loaded=0;
+	var tb11=new Image();
+	tb11.src='img/training/training_map/tb_11.png';
+	tb11.onload=function(){
+		tb11Loaded=1;
+	}
+	var tHere00Loaded=0;
+	var tHere00=new Image();
+	tHere00.src='img/training/training_map/t_here_00.png';
+	tHere00.onload=function(){
+		tHere00Loaded=1;
+	}
+	var tHere01Loaded=0;
+	var tHere01=new Image();
+	tHere01.src='img/training/training_map/t_here_01.png';
+	tHere01.onload=function(){
+		tHere01Loaded=1;
+	}
+	var tHere11Loaded=0;
+	var tHere11=new Image();
+	tHere11.src='img/training/training_map/t_here_11.png';
+	tHere11.onload=function(){
+		tHere11Loaded=1;
+	}
+	var tHere10Loaded=0;
+	var tHere10=new Image();
+	tHere10.src='img/training/training_map/t_here_10.png';
+	tHere10.onload=function(){
+		tHere10Loaded=1;
+	}
+	
+	//FOR FOREST
+	var forestMapLoaded=0;
+	var forestMap=new Image();
+	forestMap.src='img/GameMap/Map.png';
+	forestMap.onload=function(){
+		forestMapLoaded=1;
+	}
+	var fb00Loaded=0;
+	var fb00=new Image();
+	fb00.src='img/GameMap/G00.png';
+	fb00.onload=function(){
+		fb00Loaded=1;
+	}
+	var fb02Loaded=0;
+	var fb02=new Image();
+	fb02.src='img/GameMap/G02.png';
+	fb02.onload=function(){
+		fb02Loaded=1;
+	}
+	var fb03Loaded=0;
+	var fb03=new Image();
+	fb03.src='img/GameMap/G03.png';
+	fb03.onload=function(){
+		fb03Loaded=1;
+	}
+	var fb04Loaded=0;
+	var fb04=new Image();
+	fb04.src='img/GameMap/G04.png';
+	fb04.onload=function(){
+		fb04Loaded=1;
+	}
+	var fb05Loaded=0;
+	var fb05=new Image();
+	fb05.src='img/GameMap/G05.png';
+	fb05.onload=function(){
+		fb05Loaded=1;
+	}
+	var fb06Loaded=0;
+	var fb06=new Image();
+	fb06.src='img/GameMap/G06.png';
+	fb06.onload=function(){
+		fb06Loaded=1;
+	}
+	var fb07Loaded=0;
+	var fb07=new Image();
+	fb07.src='img/GameMap/G07.png';
+	fb07.onload=function(){
+		fb07Loaded=1;
+	}
+	var fb10Loaded=0;
+	var fb10=new Image();
+	fb10.src="img/GameMap/G10.png";
+	fb10.onload=function(){fb10Loaded=1;}
+
+	var fb11Loaded=0;
+	var fb11=new Image();
+	fb11.src="img/GameMap/G11.png";
+	fb11.onload=function(){fb11Loaded=1;}
+
+	var fb12Loaded=0;
+	var fb12=new Image();
+	fb12.src="img/GameMap/G12.png";
+	fb12.onload=function(){fb12Loaded=1;}
+
+	var fb13Loaded=0;
+	var fb13=new Image();
+	fb13.src="img/GameMap/G13.png";
+	fb13.onload=function(){fb13Loaded=1;}
+
+	var fb14Loaded=0;
+	var fb14=new Image();
+	fb14.src="img/GameMap/G14.png";
+	fb14.onload=function(){fb14Loaded=1;}
+
+	var fb15Loaded=0;
+	var fb15=new Image();
+	fb15.src="img/GameMap/G15.png";
+	fb15.onload=function(){fb15Loaded=1;}
+
+	var fb16Loaded=0;
+	var fb16=new Image();
+	fb16.src="img/GameMap/G16.png";
+	fb16.onload=function(){fb16Loaded=1;}
+
+	var fb17Loaded=0;
+	var fb17=new Image();
+	fb17.src="img/GameMap/G17.png";
+	fb17.onload=function(){fb17Loaded=1;}
+
+	var fb20Loaded=0;
+	var fb20=new Image();
+	fb20.src="img/GameMap/G20.png";
+	fb20.onload=function(){fb20Loaded=1;}
+
+	var fb21Loaded=0;
+	var fb21=new Image();
+	fb21.src="img/GameMap/G21.png";
+	fb21.onload=function(){fb21Loaded=1;}
+
+	var fb22Loaded=0;
+	var fb22=new Image();
+	fb22.src="img/GameMap/G22.png";
+	fb22.onload=function(){fb22Loaded=1;}
+
+	var fb23Loaded=0;
+	var fb23=new Image();
+	fb23.src="img/GameMap/G23.png";
+	fb23.onload=function(){fb23Loaded=1;}
+
+	var fb24Loaded=0;
+	var fb24=new Image();
+	fb24.src="img/GameMap/G24.png";
+	fb24.onload=function(){fb24Loaded=1;}
+
+	var fb25Loaded=0;
+	var fb25=new Image();
+	fb25.src="img/GameMap/G25.png";
+	fb25.onload=function(){fb25Loaded=1;}
+
+	var fb26Loaded=0;
+	var fb26=new Image();
+	fb26.src="img/GameMap/G26.png";
+	fb26.onload=function(){fb26Loaded=1;}
+
+	var fb27Loaded=0;
+	var fb27=new Image();
+	fb27.src="img/GameMap/G27.png";
+	fb27.onload=function(){fb27Loaded=1;}
+
+	var fb30Loaded=0;
+	var fb30=new Image();
+	fb30.src="img/GameMap/G30.png";
+	fb30.onload=function(){fb30Loaded=1;}
+
+	var fb31Loaded=0;
+	var fb31=new Image();
+	fb31.src="img/GameMap/G31.png";
+	fb31.onload=function(){fb31Loaded=1;}
+
+	var fb32Loaded=0;
+	var fb32=new Image();
+	fb32.src="img/GameMap/G32.png";
+	fb32.onload=function(){fb32Loaded=1;}
+
+	var fb33Loaded=0;
+	var fb33=new Image();
+	fb33.src="img/GameMap/G33.png";
+	fb33.onload=function(){fb33Loaded=1;}
+
+	var fb34Loaded=0;
+	var fb34=new Image();
+	fb34.src="img/GameMap/G34.png";
+	fb34.onload=function(){fb34Loaded=1;}
+
+	var fb35Loaded=0;
+	var fb35=new Image();
+	fb35.src="img/GameMap/G35.png";
+	fb35.onload=function(){fb35Loaded=1;}
+
+	var fb36Loaded=0;
+	var fb36=new Image();
+	fb36.src="img/GameMap/G36.png";
+	fb36.onload=function(){fb36Loaded=1;}
+
+	var fb37Loaded=0;
+	var fb37=new Image();
+	fb37.src="img/GameMap/G37.png";
+	fb37.onload=function(){fb37Loaded=1;}
+
+	var fb40Loaded=0;
+	var fb40=new Image();
+	fb40.src="img/GameMap/G40.png";
+	fb40.onload=function(){fb40Loaded=1;}
+
+	var fb41Loaded=0;
+	var fb41=new Image();
+	fb41.src="img/GameMap/G41.png";
+	fb41.onload=function(){fb41Loaded=1;}
+
+	var fb42Loaded=0;
+	var fb42=new Image();
+	fb42.src="img/GameMap/G42.png";
+	fb42.onload=function(){fb42Loaded=1;}
+
+	var fb43Loaded=0;
+	var fb43=new Image();
+	fb43.src="img/GameMap/G43.png";
+	fb43.onload=function(){fb43Loaded=1;}
+
+	var fb44Loaded=0;
+	var fb44=new Image();
+	fb44.src="img/GameMap/G44.png";
+	fb44.onload=function(){fb44Loaded=1;}
+
+	var fb45Loaded=0;
+	var fb45=new Image();
+	fb45.src="img/GameMap/G45.png";
+	fb45.onload=function(){fb45Loaded=1;}
+
+	var fb46Loaded=0;
+	var fb46=new Image();
+	fb46.src="img/GameMap/G46.png";
+	fb46.onload=function(){fb46Loaded=1;}
+
+	var fb47Loaded=0;
+	var fb47=new Image();
+	fb47.src="img/GameMap/G47.png";
+	fb47.onload=function(){fb47Loaded=1;}
+
+	var fb50Loaded=0;
+	var fb50=new Image();
+	fb50.src="img/GameMap/G50.png";
+	fb50.onload=function(){fb50Loaded=1;}
+
+	var fb51Loaded=0;
+	var fb51=new Image();
+	fb51.src="img/GameMap/G51.png";
+	fb51.onload=function(){fb51Loaded=1;}
+
+	var fb52Loaded=0;
+	var fb52=new Image();
+	fb52.src="img/GameMap/G52.png";
+	fb52.onload=function(){fb52Loaded=1;}
+
+	var fb53Loaded=0;
+	var fb53=new Image();
+	fb53.src="img/GameMap/G53.png";
+	fb53.onload=function(){fb53Loaded=1;}
+
+	var fb54Loaded=0;
+	var fb54=new Image();
+	fb54.src="img/GameMap/G54.png";
+	fb54.onload=function(){fb54Loaded=1;}
+
+	var fb55Loaded=0;
+	var fb55=new Image();
+	fb55.src="img/GameMap/G55.png";
+	fb55.onload=function(){fb55Loaded=1;}
+
+	var fb56Loaded=0;
+	var fb56=new Image();
+	fb56.src="img/GameMap/G56.png";
+	fb56.onload=function(){fb56Loaded=1;}
+
+	var fb57Loaded=0;
+	var fb57=new Image();
+	fb57.src="img/GameMap/G57.png";
+	fb57.onload=function(){fb57Loaded=1;}
+
+	var fb60Loaded=0;
+	var fb60=new Image();
+	fb60.src="img/GameMap/G60.png";
+	fb60.onload=function(){fb60Loaded=1;}
+
+	var fb61Loaded=0;
+	var fb61=new Image();
+	fb61.src="img/GameMap/G61.png";
+	fb61.onload=function(){fb61Loaded=1;}
+
+	var fb62Loaded=0;
+	var fb62=new Image();
+	fb62.src="img/GameMap/G62.png";
+	fb62.onload=function(){fb62Loaded=1;}
+
+	var fb63Loaded=0;
+	var fb63=new Image();
+	fb63.src="img/GameMap/G63.png";
+	fb63.onload=function(){fb63Loaded=1;}
+
+	var fb64Loaded=0;
+	var fb64=new Image();
+	fb64.src="img/GameMap/G64.png";
+	fb64.onload=function(){fb64Loaded=1;}
+
+	var fb65Loaded=0;
+	var fb65=new Image();
+	fb65.src="img/GameMap/G65.png";
+	fb65.onload=function(){fb65Loaded=1;}
+
+	var fb66Loaded=0;
+	var fb66=new Image();
+	fb66.src="img/GameMap/G66.png";
+	fb66.onload=function(){fb66Loaded=1;}
+
+	var fb67Loaded=0;
+	var fb67=new Image();
+	fb67.src="img/GameMap/G67.png";
+	fb67.onload=function(){fb67Loaded=1;}
+	
+	var fHere00Loaded=0;
+	var fHere00=new Image();
+	fHere00.src="img/GameMap/Here/H00.png";
+	fHere00.onload=function(){fHere00Loaded=1;}
+
+	var fHere01Loaded=0;
+	var fHere01=new Image();
+	fHere01.src="img/GameMap/Here/H01.png";
+	fHere01.onload=function(){fHere01Loaded=1;}
+
+	var fHere02Loaded=0;
+	var fHere02=new Image();
+	fHere02.src="img/GameMap/Here/H02.png";
+	fHere02.onload=function(){fHere02Loaded=1;}
+
+	var fHere03Loaded=0;
+	var fHere03=new Image();
+	fHere03.src="img/GameMap/Here/H03.png";
+	fHere03.onload=function(){fHere03Loaded=1;}
+
+	var fHere04Loaded=0;
+	var fHere04=new Image();
+	fHere04.src="img/GameMap/Here/H04.png";
+	fHere04.onload=function(){fHere04Loaded=1;}
+
+	var fHere05Loaded=0;
+	var fHere05=new Image();
+	fHere05.src="img/GameMap/Here/H05.png";
+	fHere05.onload=function(){fHere05Loaded=1;}
+
+	var fHere06Loaded=0;
+	var fHere06=new Image();
+	fHere06.src="img/GameMap/Here/H06.png";
+	fHere06.onload=function(){fHere06Loaded=1;}
+
+	var fHere07Loaded=0;
+	var fHere07=new Image();
+	fHere07.src="img/GameMap/Here/H07.png";
+	fHere07.onload=function(){fHere07Loaded=1;}
+
+	var fHere10Loaded=0;
+	var fHere10=new Image();
+	fHere10.src="img/GameMap/Here/H10.png";
+	fHere10.onload=function(){fHere10Loaded=1;}
+
+	var fHere11Loaded=0;
+	var fHere11=new Image();
+	fHere11.src="img/GameMap/Here/H11.png";
+	fHere11.onload=function(){fHere11Loaded=1;}
+
+	var fHere12Loaded=0;
+	var fHere12=new Image();
+	fHere12.src="img/GameMap/Here/H12.png";
+	fHere12.onload=function(){fHere12Loaded=1;}
+
+	var fHere13Loaded=0;
+	var fHere13=new Image();
+	fHere13.src="img/GameMap/Here/H13.png";
+	fHere13.onload=function(){fHere13Loaded=1;}
+
+	var fHere14Loaded=0;
+	var fHere14=new Image();
+	fHere14.src="img/GameMap/Here/H14.png";
+	fHere14.onload=function(){fHere14Loaded=1;}
+
+	var fHere15Loaded=0;
+	var fHere15=new Image();
+	fHere15.src="img/GameMap/Here/H15.png";
+	fHere15.onload=function(){fHere15Loaded=1;}
+
+	var fHere16Loaded=0;
+	var fHere16=new Image();
+	fHere16.src="img/GameMap/Here/H16.png";
+	fHere16.onload=function(){fHere16Loaded=1;}
+
+	var fHere17Loaded=0;
+	var fHere17=new Image();
+	fHere17.src="img/GameMap/Here/H17.png";
+	fHere17.onload=function(){fHere17Loaded=1;}
+
+	var fHere20Loaded=0;
+	var fHere20=new Image();
+	fHere20.src="img/GameMap/Here/H20.png";
+	fHere20.onload=function(){fHere20Loaded=1;}
+
+	var fHere21Loaded=0;
+	var fHere21=new Image();
+	fHere21.src="img/GameMap/Here/H21.png";
+	fHere21.onload=function(){fHere21Loaded=1;}
+
+	var fHere22Loaded=0;
+	var fHere22=new Image();
+	fHere22.src="img/GameMap/Here/H22.png";
+	fHere22.onload=function(){fHere22Loaded=1;}
+
+	var fHere23Loaded=0;
+	var fHere23=new Image();
+	fHere23.src="img/GameMap/Here/H23.png";
+	fHere23.onload=function(){fHere23Loaded=1;}
+
+	var fHere24Loaded=0;
+	var fHere24=new Image();
+	fHere24.src="img/GameMap/Here/H24.png";
+	fHere24.onload=function(){fHere24Loaded=1;}
+
+	var fHere25Loaded=0;
+	var fHere25=new Image();
+	fHere25.src="img/GameMap/Here/H25.png";
+	fHere25.onload=function(){fHere25Loaded=1;}
+
+	var fHere26Loaded=0;
+	var fHere26=new Image();
+	fHere26.src="img/GameMap/Here/H26.png";
+	fHere26.onload=function(){fHere26Loaded=1;}
+
+	var fHere27Loaded=0;
+	var fHere27=new Image();
+	fHere27.src="img/GameMap/Here/H27.png";
+	fHere27.onload=function(){fHere27Loaded=1;}
+
+	var fHere30Loaded=0;
+	var fHere30=new Image();
+	fHere30.src="img/GameMap/Here/H30.png";
+	fHere30.onload=function(){fHere30Loaded=1;}
+
+	var fHere31Loaded=0;
+	var fHere31=new Image();
+	fHere31.src="img/GameMap/Here/H31.png";
+	fHere31.onload=function(){fHere31Loaded=1;}
+
+	var fHere32Loaded=0;
+	var fHere32=new Image();
+	fHere32.src="img/GameMap/Here/H32.png";
+	fHere32.onload=function(){fHere32Loaded=1;}
+
+	var fHere33Loaded=0;
+	var fHere33=new Image();
+	fHere33.src="img/GameMap/Here/H33.png";
+	fHere33.onload=function(){fHere33Loaded=1;}
+
+	var fHere34Loaded=0;
+	var fHere34=new Image();
+	fHere34.src="img/GameMap/Here/H34.png";
+	fHere34.onload=function(){fHere34Loaded=1;}
+
+	var fHere35Loaded=0;
+	var fHere35=new Image();
+	fHere35.src="img/GameMap/Here/H35.png";
+	fHere35.onload=function(){fHere35Loaded=1;}
+
+	var fHere36Loaded=0;
+	var fHere36=new Image();
+	fHere36.src="img/GameMap/Here/H36.png";
+	fHere36.onload=function(){fHere36Loaded=1;}
+
+	var fHere37Loaded=0;
+	var fHere37=new Image();
+	fHere37.src="img/GameMap/Here/H37.png";
+	fHere37.onload=function(){fHere37Loaded=1;}
+
+	var fHere40Loaded=0;
+	var fHere40=new Image();
+	fHere40.src="img/GameMap/Here/H40.png";
+	fHere40.onload=function(){fHere40Loaded=1;}
+
+	var fHere41Loaded=0;
+	var fHere41=new Image();
+	fHere41.src="img/GameMap/Here/H41.png";
+	fHere41.onload=function(){fHere41Loaded=1;}
+
+	var fHere42Loaded=0;
+	var fHere42=new Image();
+	fHere42.src="img/GameMap/Here/H42.png";
+	fHere42.onload=function(){fHere42Loaded=1;}
+
+	var fHere43Loaded=0;
+	var fHere43=new Image();
+	fHere43.src="img/GameMap/Here/H43.png";
+	fHere43.onload=function(){fHere43Loaded=1;}
+
+	var fHere44Loaded=0;
+	var fHere44=new Image();
+	fHere44.src="img/GameMap/Here/H44.png";
+	fHere44.onload=function(){fHere44Loaded=1;}
+
+	var fHere45Loaded=0;
+	var fHere45=new Image();
+	fHere45.src="img/GameMap/Here/H45.png";
+	fHere45.onload=function(){fHere45Loaded=1;}
+
+	var fHere46Loaded=0;
+	var fHere46=new Image();
+	fHere46.src="img/GameMap/Here/H46.png";
+	fHere46.onload=function(){fHere46Loaded=1;}
+
+	var fHere47Loaded=0;
+	var fHere47=new Image();
+	fHere47.src="img/GameMap/Here/H47.png";
+	fHere47.onload=function(){fHere47Loaded=1;}
+
+	var fHere50Loaded=0;
+	var fHere50=new Image();
+	fHere50.src="img/GameMap/Here/H50.png";
+	fHere50.onload=function(){fHere50Loaded=1;}
+
+	var fHere51Loaded=0;
+	var fHere51=new Image();
+	fHere51.src="img/GameMap/Here/H51.png";
+	fHere51.onload=function(){fHere51Loaded=1;}
+
+	var fHere52Loaded=0;
+	var fHere52=new Image();
+	fHere52.src="img/GameMap/Here/H52.png";
+	fHere52.onload=function(){fHere52Loaded=1;}
+
+	var fHere53Loaded=0;
+	var fHere53=new Image();
+	fHere53.src="img/GameMap/Here/H53.png";
+	fHere53.onload=function(){fHere53Loaded=1;}
+
+	var fHere54Loaded=0;
+	var fHere54=new Image();
+	fHere54.src="img/GameMap/Here/H54.png";
+	fHere54.onload=function(){fHere54Loaded=1;}
+
+	var fHere55Loaded=0;
+	var fHere55=new Image();
+	fHere55.src="img/GameMap/Here/H55.png";
+	fHere55.onload=function(){fHere55Loaded=1;}
+
+	var fHere56Loaded=0;
+	var fHere56=new Image();
+	fHere56.src="img/GameMap/Here/H56.png";
+	fHere56.onload=function(){fHere56Loaded=1;}
+
+	var fHere57Loaded=0;
+	var fHere57=new Image();
+	fHere57.src="img/GameMap/Here/H57.png";
+	fHere57.onload=function(){fHere57Loaded=1;}
+
+	var fHere60Loaded=0;
+	var fHere60=new Image();
+	fHere60.src="img/GameMap/Here/H60.png";
+	fHere60.onload=function(){fHere60Loaded=1;}
+
+	var fHere61Loaded=0;
+	var fHere61=new Image();
+	fHere61.src="img/GameMap/Here/H61.png";
+	fHere61.onload=function(){fHere61Loaded=1;}
+
+	var fHere62Loaded=0;
+	var fHere62=new Image();
+	fHere62.src="img/GameMap/Here/H62.png";
+	fHere62.onload=function(){fHere62Loaded=1;}
+
+	var fHere63Loaded=0;
+	var fHere63=new Image();
+	fHere63.src="img/GameMap/Here/H63.png";
+	fHere63.onload=function(){fHere63Loaded=1;}
+
+	var fHere64Loaded=0;
+	var fHere64=new Image();
+	fHere64.src="img/GameMap/Here/H64.png";
+	fHere64.onload=function(){fHere64Loaded=1;}
+
+	var fHere65Loaded=0;
+	var fHere65=new Image();
+	fHere65.src="img/GameMap/Here/H65.png";
+	fHere65.onload=function(){fHere65Loaded=1;}
+
+	var fHere66Loaded=0;
+	var fHere66=new Image();
+	fHere66.src="img/GameMap/Here/H66.png";
+	fHere66.onload=function(){fHere66Loaded=1;}
+
+	var fHere67Loaded=0;
+	var fHere67=new Image();
+	fHere67.src="img/GameMap/Here/H67.png";
+	fHere67.onload=function(){fHere67Loaded=1;}
+
+
+	
+	
+	
+	
+	
+	//OBJECT IMAGES
+	var potionAddedLoaded=0;
+	var potionAdded=new Image();
+	potionAdded.src='img/potion_added.png';
+	potionAdded.onload=function(){
+		potionAddedLoaded=1;
+	}
+	var gameSlingClickLoaded=0;
+	var gameSlingClick=new Image();
+	gameSlingClick.src='img/GameSlingClick.png';
+	gameSlingClick.onload=function(){
+		gameSlingClickLoaded=1;
+		theImages++;
+	}
+	var gameGreenLoaded=0;
+	var gameGreen=new Image();
+	gameGreen.src='img/GameGreen.png';
+	gameGreen.onload=function(){
+		gameGreenLoaded=1;
+	}
+	var gamePurpLoaded=0;
+	var gamePurp=new Image();
+	gamePurp.src='img/GamePurp.png';
+	gamePurp.onload=function(){
+		gamePurpLoaded=1;
+	
+	var gameRockLoaded=0;
+	var gameRock=new Image();
+	gameRock.src='img/GameRock.png';
+	gameRock.onload=function(){
+		gameRockLoaded=1;
+	}
+	var gameSlingLoaded=0;
+	var gameSling=new Image();
+	gameSling.src='img/GameSling.png';
+	gameSling.onload=function(){
+		gameSlingLoaded=1;
+	}
+	var slingLoaded=0;
+	var sling=new Image();
+	sling.src='img/sling.png';
+	sling.onload=function(){
+		slingLoaded=1;
+	}
+	var slingArrowLoaded=0;
+	var slingArrow=new Image();
+	slingArrow.src='img/training/train_click_sling.png';
+	slingArrow.onload=function(){
+		slingArrowLoaded=1;
+	}
+	var slingAddedLoaded=0;
+	var slingAdded=new Image();
+	slingAdded.src='img/shot_added.png';
+	slingAdded.onload=function(){
+		slingAddedLoaded=1;
+	}
+	var rock1Loaded=0;
+	var rock1=new Image();
+	rock1.src='img/training/train_rock.png';
+	rock1.onload=function(){
+		rock1Loaded=1;
+	}
+	var rockArrowLoaded=0;
+	var rockArrow=new Image();
+	rockArrow.src='img/training/train_click_rock.png';
+	rockArrow.onload=function(){
+		rockArrowLoaded=1;
+	}
+	var rockAddedLoaded=0;
+	var rockAdded=new Image();
+	rockAdded.src='img/rock_added.png';
+	rockAdded.onload=function(){
+		rockAddedLoaded=1;
+	}
+	var shootPurpLoaded=0;
+	var shootPurp=new Image();
+	shootPurp.src='img/ShootPurp.png';
+	shootPurp.onload=function(){
+		shootPurpLoaded=1;
+	}
+	var shootGreenLoaded=0;
+	var shootGreen=new Image();
+	shootGreen.src='img/ShootGreen.png';
+	shootGreen.onload=function(){
+		shootGreenLoaded=1;
+	}
+
+	var TG1Loaded=0;
+	var TG1=new Image();
+	TG1.src="img/PotionToss/TG1.png";
+	TG1.onload=function(){TG1Loaded=1;}
+
+	var TP1Loaded=0;
+	var TP1=new Image();
+	TP1.src="img/PotionToss/TP1.png";
+	TP1.onload=function(){TP1Loaded=1;}
+
+	var TG2Loaded=0;
+	var TG2=new Image();
+	TG2.src="img/PotionToss/TG2.png";
+	TG2.onload=function(){TG2Loaded=1;}
+
+	var TP2Loaded=0;
+	var TP2=new Image();
+	TP2.src="img/PotionToss/TP2.png";
+	TP2.onload=function(){TP2Loaded=1;}
+
+	var TG3Loaded=0;
+	var TG3=new Image();
+	TG3.src="img/PotionToss/TG3.png";
+	TG3.onload=function(){TG3Loaded=1;
+
+	var TP3Loaded=0;
+	var TP3=new Image();
+	TP3.src="img/PotionToss/TP3.png";
+	TP3.onload=function(){TP3Loaded=1;}
+
+	var TG4Loaded=0;
+	var TG4=new Image();
+	TG4.src="img/PotionToss/TG4.png";
+	TG4.onload=function(){TG4Loaded=1;}
+
+	var TP4Loaded=0;
+	var TP4=new Image();
+	TP4.src="img/PotionToss/TP4.png";
+	TP4.onload=function(){TP4Loaded=1;}
+
+	var TG5Loaded=0;
+	var TG5=new Image();
+	TG5.src="img/PotionToss/TG5.png";
+	TG5.onload=function(){TG5Loaded=1;}
+
+	var TP5Loaded=0;
+	var TP5=new Image();
+	TP5.src="img/PotionToss/TP5.png";
+	TP5.onload=function(){TP5Loaded=1;}
+
+	var TG6Loaded=0;
+	var TG6=new Image();
+	TG6.src="img/PotionToss/TG6.png";
+	TG6.onload=function(){TG6Loaded=1;}
+
+	var TP6Loaded=0;
+	var TP6=new Image();
+	TP6.src="img/PotionToss/TP6.png";
+	TP6.onload=function(){TP6Loaded=1;}
+
+	var TG7Loaded=0;
+	var TG7=new Image();
+	TG7.src="img/PotionToss/TG7.png";
+	TG7.onload=function(){TG7Loaded=1;}
+
+	var TP7Loaded=0;
+	var TP7=new Image();
+	TP7.src="img/PotionToss/TP7.png";
+	TP7.onload=function(){TP7Loaded=1;}
+
+	var TG8Loaded=0;
+	var TG8=new Image();
+	TG8.src="img/PotionToss/TG8.png";
+	TG8.onload=function(){TG8Loaded=1;}
+
+	var TP8Loaded=0;
+	var TP8=new Image();
+	TP8.src="img/PotionToss/TP8.png";
+	TP8.onload=function(){TP8Loaded=1;}
+
+	var TG9Loaded=0;
+	var TG9=new Image();
+	TG9.src="img/PotionToss/TG9.png";
+	TG9.onload=function(){TG9Loaded=1;}
+
+	var TP9Loaded=0;
+	var TP9=new Image();
+	TP9.src="img/PotionToss/TP9.png";
+	TP9.onload=function(){TP9Loaded=1;}
+
+	var shootRockLoaded=0;
+	var shootRock=new Image();
+	shootRock.src='img/Shoot_rock.png';
+	shootRock.onload=function(){
+		shootRockLoaded=1;
+	}
+	var tRock1Loaded=0
+	var tRock1=new Image();
+	tRock1.src='img/Rock/R1.png';
+	tRock1.onload=function(){
+		tRock1Loaded=1;
+	}
+	var tRock2Loaded=0
+	var tRock2=new Image();
+	tRock2.src='img/Rock/R2.png';
+	tRock2.onload=function(){
+		tRock2Loaded=1;
+	}
+	var tRock3Loaded=0
+	var tRock3=new Image();
+	tRock3.src='img/Rock/R3.png';
+	tRock3.onload=function(){
+		tRock3Loaded=1;
+	
+	var tRock4Loaded=0
+	var tRock4=new Image();
+	tRock4.src='img/Rock/R4.png';
+	tRock4.onload=function(){
+		tRock4Loaded=1;
+	}
+	var tRock5Loaded=0
+	var tRock5=new Image();
+	tRock5.src='img/Rock/R5.png';
+	tRock5.onload=function(){
+		tRock5Loaded=1;
+	}
+	var tRock6Loaded=0
+	var tRock6=new Image();
+	tRock6.src='img/Rock/R6.png';
+	tRock6.onload=function(){
+		tRock6Loaded=1;
+	}
+	var tRock7Loaded=0
+	var tRock7=new Image();
+	tRock7.src='img/Rock/R7.png';
+	tRock7.onload=function(){
+		tRock7Loaded=1;
+	}
+	var tRock8Loaded=0
+	var tRock8=new Image();
+	tRock8.src='img/Rock/R8.png';
+	tRock8.onload=function(){
+		tRock8Loaded=1;
+	}
+	var tRock9Loaded=0
+	var tRock9=new Image();
+	tRock9.src='img/Rock/R9.png';
+	tRock9.onload=function(){
+		tRock9Loaded=1;
+	}
+	var tRock10Loaded=0
+	var tRock10=new Image();
+	tRock10.src='img/Rock/R10.png';
+	tRock10.onload=function(){
+		tRock10Loaded=1;
+	}
+	var tRock11Loaded=0
+	var tRock11=new Image();
+	tRock11.src='img/Rock/R11.png';
+	tRock11.onload=function(){
+		tRock11Loaded=1;
+	}
+	var tRock12Loaded=0
+	var tRock12=new Image();
+	tRock12.src='img/Rock/R12.png';
+	tRock12.onload=function(){
+		tRock12Loaded=1;
+	}
+	var tRock13Loaded=0
+	var tRock13=new Image();
+	tRock13.src='img/Rock/R13.png';
+	tRock13.onload=function(){
+		tRock13Loaded=1;
+	}
+	var tRock14Loaded=0
+	var tRock14=new Image();
+	tRock14.src='img/Rock/R14.png';
+	tRock14.onload=function(){
+		tRock14Loaded=1;
+	}
+	var tRock15Loaded=0
+	var tRock15=new Image();
+	tRock15.src='img/Rock/R15.png';
+	tRock15.onload=function(){
+		tRock15Loaded=1;
+	}
+	var tRock16Loaded=0
+	var tRock16=new Image();
+	tRock16.src='img/Rock/R16.png';
+	tRock16.onload=function(){
+		tRock16Loaded=1;
+	}
+	
+	//CREATURE IMAGES
+	var bunnyHop1Loaded=0;
+	var bunnyHop1=new Image();
+	bunnyHop1.src='img/BunnyJump/1.png';
+	bunnyHop1.onload=function(){
+		bunnyHop1Loaded=1;
+	}
+	var bunnyHop2Loaded=0;
+	var bunnyHop2=new Image();
+	bunnyHop2.src='img/BunnyJump/2.png';
+	bunnyHop2.onload=function(){
+		bunnyHop2Loaded=1;
+	
+	var bunnyHop3Loaded=0;
+	var bunnyHop3=new Image();
+	bunnyHop3.src='img/BunnyJump/3.png';
+	bunnyHop3.onload=function(){
+		bunnyHop3Loaded=1;
+	}
+	var bunnyHop4Loaded=0;
+	var bunnyHop4=new Image();
+	bunnyHop4.src='img/BunnyJump/4.png';
+	bunnyHop4.onload=function(){
+		bunnyHop4Loaded=1;
+	}
+	var bunnyHop5Loaded=0;
+	var bunnyHop5=new Image();
+	bunnyHop5.src='img/BunnyJump/5.png';
+	bunnyHop5.onload=function(){
+		bunnyHop5Loaded=1;
+	}
+	var dragonFire1Loaded=0;
+	var dragonFire1=new Image();
+	dragonFire1.src='img/Dragon/DragonFire1.png';
+	dragonFire1.onload=function(){
+		dragonFire1Loaded=1;
+	
+	var dragonFire2Loaded=0;
+	var dragonFire2=new Image();
+	dragonFire2.src='img/Dragon/DragonFire2.png';
+	dragonFire2.onload=function(){
+		dragonFire2Loaded=1;
+	}
+	var dragonFire3Loaded=0;
+	var dragonFire3=new Image();
+	dragonFire3.src='img/Dragon/DragonFire3.png';
+	dragonFire3.onload=function(){
+		dragonFire3Loaded=1;
+	}
+	var dragonFire4Loaded=0;
+	var dragonFire4=new Image();
+	dragonFire4.src='img/Dragon/DragonFire4.png';
+	dragonFire4.onload=function(){
+		dragonFire4Loaded=1;
+	}
+	var dragonFire5Loaded=0;
+	var dragonFire5=new Image();
+	dragonFire5.src='img/Dragon/DragonFire5.png';
+	dragonFire5.onload=function(){
+		dragonFire5Loaded=1;
+	}
+	var dragonFire6Loaded=0;
+	var dragonFire6=new Image();
+	dragonFire6.src='img/Dragon/DragonFire6.png';
+	dragonFire6.onload=function(){
+		dragonFire6Loaded=1;
+	}
+	var dragonFire7Loaded=0;
+	var dragonFire7=new Image();
+	dragonFire7.src='img/Dragon/DragonFire7.png';
+	dragonFire7.onload=function(){
+		dragonFire7Loaded=1;
+	}
+	var dragonMainLoaded=0;
+	var dragonMain=new Image();
+	dragonMain.src='img/Dragon/DragonMain.png';
+	dragonMain.onload=function(){
+		dragonMainLoaded=1;
+	}
+	var dragonFly1Loaded=0;
+	var dragonFly1=new Image();
+	dragonFly1.src='img/Dragon/DragonFly1.png';
+	dragonFly1.onload=function(){
+		dragonFly1Loaded=1;
+	}
+	var dragonFly2Loaded=0;
+	var dragonFly2=new Image();
+	dragonFly2.src='img/Dragon/DragonFly2.png';
+	dragonFly2.onload=function(){
+		dragonFly2Loaded=1;
+	}
+	var dragonFly3Loaded=0;
+	var dragonFly3=new Image();
+	dragonFly3.src='img/Dragon/DragonFly3.png';
+	dragonFly3.onload=function(){
+		dragonFly3Loaded=1;
+	}
+	var beastLoaded=0;
+	var beast=new Image();
+	beast.src='img/Beast1.png';
+	beast.onload=function(){
+		beastLoaded=1;
+	
+	var bunnyA1Loaded=0;
+	var bunnyA1=new Image();
+	bunnyA1.src='img/A1.png';
+	bunnyA1.onload=function(){
+		bunnyA1Loaded=1;
+	}
+	var bunnyA2Loaded=0;
+	var bunnyA2=new Image();
+	bunnyA2.src='img/A2.png';
+	bunnyA2.onload=function(){
+		bunnyA2Loaded=1;
+	}
+	var bunnyA3Loaded=0;
+	var bunnyA3=new Image();
+	bunnyA3.src='img/A3.png';
+	bunnyA3.onload=function(){
+		bunnyA3Loaded=1;
+	}
+	var bunnyA4Loaded=0;
+	var bunnyA4=new Image();
+	bunnyA4.src='img/A4.png';
+	bunnyA4.onload=function(){
+		bunnyA4Loaded=1;
+	
+	var bunnyA5Loaded=0;
+	var bunnyA5=new Image();
+	bunnyA5.src='img/A5.png';
+	bunnyA5.onload=function(){
+		bunnyA5Loaded=1;
+	}
+	var bunnySad1Loaded=0;
+	var bunnySad1=new Image();
+	bunnySad1.src='img/Bunny_sad_1.png';
+	bunnySad1.onload=function(){
+		bunnySad1Loaded=1;
+	}
+	var bunnySad2Loaded=0;
+	var bunnySad2=new Image();
+	bunnySad2.src='img/Bunny_sad_2.png';
+	bunnySad2.onload=function(){
+		bunnySad2Loaded=1;
+	}
+	var bunnySad3Loaded=0;
+	var bunnySad3=new Image();
+	bunnySad3.src='img/Bunny_sad_3.png';
+	bunnySad3.onload=function(){
+		bunnySad3Loaded=1;
+	}
+	var bunnySad4Loaded=0;
+	var bunnySad4=new Image();
+	bunnySad4.src='img/Bunny_sad_4.png';
+	bunnySad4.onload=function(){
+		bunnySad4Loaded=1;
+	}
+	var stunBeastLoaded=0;
+	var stunBeast=new Image();
+	stunBeast.src='img/Bunny2.png';
+	stunBeast.onload=function(){
+		stunBeastLoaded=1;
+	}
+	var puffSmokeLoaded=0;
+	var puffSmoke=new Image();
+	puffSmoke.src='img/Puff_1.png';
+	puffSmoke.onload=function(){
+		puffSmokeLoaded=1;
+	}
+	var endSmokeLoaded=0;
+	var endSmoke=new Image();
+	endSmoke.src='img/Puff_2.png';
+	endSmoke.onload=function(){
+		endSmokeLoaded=1;
+	}
+	var star1Loaded=0;
+	var star1=new Image();
+	star1.src='img/Star01.png';
+	star1.onload=function(){
+		star1Loaded=1;
+	}
+	var star2Loaded=0;
+	var star2=new Image();
+	star2.src='img/Star02.png';
+	star2.onload=function(){
+		star2Loaded=1;
+	}
+	var star3Loaded=0;
+	var star3=new Image();
+	star3.src='img/Star03.png';
+	star3.onload=function(){
+		star3Loaded=1;
+	}
+	var star4Loaded=0;
+	var star4=new Image();
+	star4.src='img/Star04.png';
+	star4.onload=function(){
+		star4Loaded=1;
+	}
+	var turtDef1Loaded=1;
+	var turtDef1=new Image();
+	turtDef1.src='img/TurtDef1.png';
+	turtDef1.onload=function(){
+		turtDef1Loaded=1;
+	}
+	var turtDef2Loaded=1;
+	var turtDef2=new Image();
+	turtDef2.src='img/TurtDef2.png';
+	turtDef2.onload=function(){
+		turtDef2Loaded=1;
+	
+	var turtDef3Loaded=1;
+	var turtDef3=new Image();
+	turtDef3.src='img/TurtDef3.png';
+	turtDef3.onload=function(){
+		turtDef3Loaded=1;
+	}
+	var turt1Loaded=0;
+	var turt1=new Image();
+	turt1.src='img/1_turt_1.png';
+	turt1.onload=function(){
+		turt1Loaded=1;
+	}
+	var turt2Loaded=0;
+	var turt2=new Image();
+	turt2.src='img/1_turt_2.png';
+	turt2.onload=function(){
+		turt2Loaded=1;
+	}
+	var turt3Loaded=0;
+	var turt3=new Image();
+	turt3.src='img/1_turt_3.png';
+	turt3.onload=function(){
+		turt3Loaded=1;
+	}
+	var turt4Loaded=0;
+	var turt4=new Image();
+	turt4.src='img/1_turt_4.png';
+	turt4.onload=function(){
+		turt4Loaded=1;
+	}
+	var turt5Loaded=0;
+	var turt5=new Image();
+	turt5.src='img/1_turt_5.png';
+	turt5.onload=function(){
+		turt5Loaded=1;
+	}
+	var turtDance1Loaded=0;
+	var turtDance1=new Image();
+	turtDance1.src='img/TurtDance/Dance1.png';
+	turtDance1.onload=function(){
+		turtDance1Loaded=1;
+	}
+	var turtDance2Loaded=0;
+	var turtDance2=new Image();
+	turtDance2.src='img/TurtDance/Dance2.png';
+	turtDance2.onload=function(){
+		turtDance2Loaded=1;
+	}
+	var turtDance3Loaded=0;
+	var turtDance3=new Image();
+	turtDance3.src='img/TurtDance/Dance3.png';
+	turtDance3.onload=function(){
+		turtDance3Loaded=1;
+	}
+	var turtDance4Loaded=0;
+	var turtDance4=new Image();
+	turtDance4.src='img/TurtDance/Dance4.png';
+	turtDance4.onload=function(){
+		turtDance4Loaded=1;
+	}
+	var turtDance5Loaded=0;
+	var turtDance5=new Image();
+	turtDance5.src='img/TurtDance/Dance5.png';
+	turtDance5.onload=function(){
+		turtDance5Loaded=1;
+	}
+	var turtDance6Loaded=0;
+	var turtDance6=new Image();
+	turtDance6.src='img/TurtDance/Dance6.png';
+	turtDance6.onload=function(){
+		turtDance6Loaded=1;
+	
+	var turtDance7Loaded=0;
+	var turtDance7=new Image();
+	turtDance7.src='img/TurtDance/Dance7.png';
+	turtDance7.onload=function(){
+		turtDance7Loaded=1;
+	}
+	var turtDance8Loaded=0;
+	var turtDance8=new Image();
+	turtDance8.src='img/TurtDance/Dance8.png';
+	turtDance8.onload=function(){
+		turtDance8Loaded=8;
+	}
+	var turtDance9Loaded=0;
+	var turtDance9=new Image();
+	turtDance9.src='img/TurtDance/Dance9.png';
+	turtDance9.onload=function(){
+		turtDance9Loaded=1;
+	}
+	var turtDance10Loaded=0;
+	var turtDance10=new Image();
+	turtDance10.src='img/TurtDance/At1.png';
+	turtDance10.onload=function(){
+		turtDance10Loaded=1;
+	}
+	var turtDance11Loaded=0;
+	var turtDance11=new Image();
+	turtDance11.src='img/TurtDance/At2.png';
+	turtDance11.onload=function(){
+		turtDance11Loaded=1;
+	}
+	var turtDance12Loaded=0;
+	var turtDance12=new Image();
+	turtDance12.src='img/TurtDance/At3.png';
+	turtDance12.onload=function(){
+		turtDance12Loaded=1;
+	}
+	var turtDance13Loaded=0;
+	var turtDance13=new Image();
+	turtDance13.src='img/TurtDance/At4.png';
+	turtDance13.onload=function(){
+		turtDance13Loaded=13;
+	}
+	var turtDance14Loaded=0;
+	var turtDance14=new Image();
+	turtDance14.src='img/TurtDance/At5.png';
+	turtDance14.onload=function(){
+		turtDance14Loaded=1;
+	}
+	var turtDance15Loaded=0;
+	var turtDance15=new Image();
+	turtDance15.src='img/TurtDance/At6.png';
+	turtDance15.onload=function(){
+		turtDance15Loaded=1;
+	}
+	var turtDance16Loaded=0;
+	var turtDance16=new Image();
+	turtDance16.src='img/TurtDance/At7.png';
+	turtDance16.onload=function(){
+		turtDance16Loaded=1;
+	}
+	var turtDance17Loaded=0;
+	var turtDance17=new Image();
+	turtDance17.src='img/TurtDance/At8.png';
+	turtDance17.onload=function(){
+		turtDance17Loaded=1;
+	}
+	var turtDance18Loaded=0;
+	var turtDance18=new Image();
+	turtDance18.src='img/TurtDance/At9.png';
+	turtDance18.onload=function(){
+		turtDance18Loaded=1;
+	}
+	
+	var smokeOut1Loaded=0;
+	var smokeOut1=new Image();
+	smokeOut1.src='img/Smoke_out1.png';
+	smokeOut1.onload=function(){
+		smokeOut1Loaded=1;
+	
+	var smokeOut2Loaded=0;
+	var smokeOut2=new Image();
+	smokeOut2.src='img/Smoke_out2.png';
+	smokeOut2.onload=function(){
+		smokeOut2Loaded=1;
+	}
+	var smokeOut3Loaded=0;
+	var smokeOut3=new Image();
+	smokeOut3.src='img/Smoke_out3.png';
+	smokeOut3.onload=function(){
+		smokeOut3Loaded=1;
+	}
+	var turtSad1Loaded=0;
+	var turtSad1=new Image();
+	turtSad1.src='img/A_sad1.png';
+	turtSad1.onload=function(){
+		turtSad1Loaded=1;
+	}
+	var turtSad3Loaded=0;
+	var turtSad3=new Image();
+	turtSad3.src='img/A_sad4.png';
+	turtSad3.onload=function(){
+		turtSad3Loaded=1;
+	}
+	var turtSad2Loaded=0;
+	var turtSad2=new Image();
+	turtSad2.src='img/A_sad2.png';
+	turtSad2.onload=function(){
+		turtSad2Loaded=1;
+	}
+	var turtSad4Loaded=0;
+	var turtSad4=new Image();
+	turtSad4.src='img/A_sad5.png';
+	turtSad4.onload=function(){
+		turtSad4Loaded=1;
+	}
+	
+	
+	
+	
+	
+	
+	
+	//WIZARD MESSAGES IMAGES
+	var wizzyBecomeLoaded=0;
+	var wizzyBecome=new Image();
+	wizzyBecome.src='img/Become.png';
+	wizzyBecome.onload=function(){
+		wizzyBecomeLoaded=1;
+		theImages++;
+	}
+	var wizzyFindLoaded=0;
+	var wizzyFind=new Image();
+	wizzyFind.src='img/FindCastle.png';
+	wizzyFind.onload=function(){
+		wizzyFindLoaded=1;
+		theImages++;
+	
+	var wizzyDefeatLoaded=0;
+	var wizzyDefeat=new Image();
+	wizzyDefeat.src='img/Defeat.png';
+	wizzyDefeat.onload=function(){
+		wizzyDefeatLoaded=1;
+		theImages++;
+	}
+	var wizzyWelcomeLoaded=0;
+	var wizzyWelcome=new Image();
+	wizzyWelcome.src='img/forest/Welcome.png';
+	wizzyWelcome.onload=function(){
+		wizzyWelcomeLoaded=1;
+		theImages++;
+	
+	var wizzyDangerLoaded=0;
+	var wizzyDanger=new Image();
+	wizzyDanger.src='img/training/Danger.png';
+	wizzyDanger.onload=function(){
+		wizzyDangerLoaded=1;
+		theImages++;
+	
+	var wizzySlingLoaded=0;
+	var wizzySling=new Image();
+	wizzySling.src='img/training/Sling_help.png';
+	wizzySling.onload=function(){
+		wizzySlingLoaded=1;
+		theImages++;
+	
+	var welcomeTrainLoaded=0;
+	var welcomeTrain=new Image();
+	welcomeTrain.src='img/training/welcome_training.png';
+	welcomeTrain.onload=function(){
+		welcomeTrainLoaded=1;
+		theImages++;
+	
+	var wizzyExploreLoaded=0;
+	var wizzyExplore=new Image();
+	wizzyExplore.src='img/training/explore.png';
+	wizzyExplore.onload=function(){
+		wizzyExploreLoaded=1;
+		theImages++;
+	
+	var wizzyRockLoaded=0;
+	var wizzyRock=new Image();
+	wizzyRock.src='img/training/Rock_help.png';
+	wizzyRock.onload=function(){
+		wizzyRockLoaded=1;
+		theImages++;
+	}
+	var wizzyBunnyLoaded=0;
+	var wizzyBunny=new Image();
+	wizzyBunny.src='img/Evil1.png';
+	wizzyBunny.onload=function(){
+		wizzyBunnyLoaded=1;
+		theImages++;
+	}
+	var wizzyBagLoaded=0;
+	var wizzyBag=new Image();
+	wizzyBag.src='img/training/Try_bag.png';
+	wizzyBag.onload=function(){
+		wizzyBagLoaded=1;
+		theImages++;
+	
+	var wizzyBunnyJobLoaded=0;
+	var wizzyBunnyJob=new Image();
+	wizzyBunnyJob.src='img/training/BunnyJob.png';
+	wizzyBunnyJob.onload=function(){
+		wizzyBunnyJobLoaded=1;
+		theImages++;
+	}
+	var wizzyCareBunnyLoaded=0;
+	var wizzyCareBunny=new Image();
+	wizzyCareBunny.src='img/training/Careful1.png';
+	wizzyCareBunny.onload=function(){
+		wizzyCareBunnyLoaded=1;
+		theImages++;
+	
+	var wizzyCreaturesLoaded=0;
+	var wizzyCreatures=new Image();
+	wizzyCreatures.src='img/training/Magic2.png';
+	wizzyCreatures.onload=function(){
+		wizzyCreaturesLoaded=1;
+		theImages++;
+	}
+	var wizzyFasterLoaded=0;
+	var wizzyFaster=new Image();
+	wizzyFaster.src='img/training/0faster.png';
+	wizzyFaster.onload=function(){
+		wizzyFasterLoaded=1;
+		theImages++;
+	}
+	var wizzyBeatTurtLoaded=0;
+	var wizzyBeatTurt=new Image();
+	wizzyBeatTurt.src='img/training/Beat_turt.png';
+	wizzyBeatTurt.onload=function(){
+		wizzyBeatTurtLoaded=1;
+		theImages++;
+	}
+	var wizzyTurtBeatLoaded=0;
+	var wizzyTurtBeat=new Image();
+	wizzyTurtBeat.src='img/training/A_turt_hurt1.png';
+	wizzyTurtBeat.onload=function(){
+		wizzyTurtBeatLoaded=1;
+		theImages++;
+	
+	var wizzyReadyLoaded=0;
+	var wizzyReady=new Image();
+	wizzyReady.src='img/training/1Ready.png';
+	wizzyReady.onload=function(){
+		wizzyReadyLoaded=1;
+		theImages++;
+	}
+	
+	
+	
+	//IMAGES TO HELP TRAINING
+	var exploreArrowLoaded=0;
+	var exploreArrow=new Image();
+	exploreArrow.src='img/training/explore_more.png';
+	exploreArrow.onload=function(){
+		exploreArrowLoaded=1;
+	}
+	var tryRockLoaded=0;
+	var tryRock=new Image();
+	tryRock.src='img/training/Clicker.png';
+	tryRock.onload=function(){
+		tryRockLoaded=1;
+	
+	var bagClickLoaded=0;
+	var bagClick=new Image();
+	bagClick.src='img/training/Bag_click1.png';
+	bagClick.onload=function(){
+		bagClickLoaded=1;
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
+	//TITLE SCREEN
+	if (h>w){
+		Main.innerHTML='<div align="center"><h1> Click Anywhere to Start!</h1></div><img src="img/title.png" style="width:100%">';
+	}
+	else{
+		Main.innerHTML='<div align="center"><h1> Click Anywhere to Start!</h1></div><img src="img/title.png" style="height:100%;">';
+	
+	}
+	document.addEventListener('click',startClick);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//GENERAL WORKING FUNCTIONS
+	
+	//RESIZING
+	window.addEventListener("resize", function(){
+		//UPDATE THE NEW SIZE OF WINDOW
+		w=window.innerWidth;
+		h=window.innerHeight;	
+		minner=Math.min(w,h);
+		if (inBag==0 && inMap==0 && inAttackBeast==0 && inAttackTurt==0 && inAttackDragon==0){
+			goBack();
+		}
+		if (inBag==1){
+			showBag();
+		}
+		if (inMap==1){
+			showMap();
+		}
+		if (inAttackBeast==1){
+			//beastAttack();
+		}
+		if (inAttackTurt==1){
+			//turtAttack();
+		}
+		if (inAttackDragon==1){
+			dragonAttack();
+		}
+	});
+	
+	function clearAllTimers(){
+		if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+			}
+		var i;
+		for (i=0;i<timeList.length;i++){
+			if (eval(timeList[i]+' != null')){
+				window.clearTimeout(eval(timeList[i]));
+				eval(timeList[i]+'=null');
+			}
+		}
+
+	};
+	
+	//GO BACK
+	function goBack(){
+		
+		//
+		Main.innerHTML='';
+		
+		clearAllTimers();
+	
+		
+		//DO WHAT NEEDS TO BE DONE
+		if (when!=0 && inAttackBeast==0 && inAttackTurt==0 && inAttackDragon==0){
+			Main.innerHTML='<div class="container"><div class="center" align="center"><h3>Loading ...</h3></div></div><div class="container"><div class="center"><div class="spinner-border text-primary" style="width: 8rem; height: 8rem;" role="status"><span class="sr-only">Loading...</span></div></div></div>';
+			timehelp=setTimeout(doDo,10);
+		}
+		if (inAttackBeast==1){
+			beastAttack();
+		}
+		if (inAttackTurt==1){
+			turtAttack();
+		}
+		if (inAttackDragon==1){
+			dragonAttack();
+		}
+		if (when==0){
+			if (h>w){
+				Main.innerHTML='<div align="center"><h1> Click Anywhere to Start!</h1></div><img src="img/title.png" style="width:100%">';
+			}
+			else{
+				Main.innerHTML='<div align="center"><h1> Click Anywhere to Start!</h1></div><img src="img/title.png" style="height:100%;">';
+	
+			}
+			document.addEventListener('click',startClick);
+		}
+	}
+	
+	function doDo(){
+		eval(whenDo[when]);
+	}
+	
+	function doBefore(){
+		var i=0;
+		//console.log(currentScreen);
+		for (i=0; i<currentScreen.length;i++){
+			Draw(currentScreen[i]);
+		}
+	}
+	
+	//SET UP CANVAS 
+	function canvasSetUp(){
+		Main.innerHTML='<canvas id="myCanvas"></canvas>';
+		canvas=document.getElementById('myCanvas');
+		width = canvas.width=minner;
+		height = canvas.height=minner;
+		ctx = canvas.getContext('2d');	
+		elemLeft=canvas.offsetLeft;
+		elemTop=canvas.offsetTop;
+	}
+	
+	//DRAW ON CANVAS
+	function Draw(what){
+		var isLoaded=what+'Loaded';
+		if (eval(isLoaded)==0){
+			eval(what).onload=function(){
+				ctx.drawImage(eval(what),0,0,minner,minner);
+				eval(isLoaded+'=1');
+			}
+		}
+		else{
+			ctx.drawImage(eval(what),0,0,minner,minner);
+		}
+	}
+	
+	function toAnimate(){
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		var lower;
+		var upper;
+		var temper;
+		//console.log(Math.floor(((60*frameRate*animateList.length)/1000)+1));
+		var poo=0;
+		var i=0;
+		var j=0;
+		var k=0;
+		var l=0;
+		if (aCounter<=Math.ceil(((60*frameRate*animateList.length)/1000))){
+			for (i=0;i<animateList.length;i++){
+				lower=(((60*frameRate)/(1000))*i);
+				upper=(((60*frameRate)/(1000))*(i+1));
+				
+				if (aCounter<=upper && aCounter>=lower){
+					drawWorld(worldShake);
+					killMap();
+					killBag();
+					killDirections(u,l,r,d);	
+					for (k=0;k<animateAlways.length;k++){
+						Draw(animateAlways[k]);
+					}
+					temper=aCounter%2;
+					if (temper==1){
+						for (l=0;l<animateFlash.length;l++){
+							Draw(animateFlash[l]);
+						}
+					}
+					for (j=0;j<animateList[i].length;j++){
+						Draw(animateList[i][j]);
+					}
+					//console.log(i+1);
+				}
+			}
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+			}
+			if (animateId==null){
+				animateId=requestAnimationFrame(toAnimate);
+			}
+			//console.log(aCounter);
+		}
+		aCounter=aCounter+1;		
+		if (aCounter==Math.ceil(((60*frameRate*animateList.length)/1000)+1)){
+			
+			//console.log(aCounter);			
+			//console.log(Math.ceil(((60*frameRate*animateList.length)/1000)+1));
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				//console.log('canceled animation');
+				animateId=null;
+			}
+			aCounter=0;
+			animateList=[];
+			animateAlways=[];
+			animateflash=[];
+			frameRate=0;
+			worldShake=null;
+			
+			//console.log('frame counter reset: '+aCounter);
+			//console.log('pre i: '+poo);
+			for (poo=0;poo<animateCode.length;poo++){
+				//console.log('code lenght: '+animateCode.length);
+				eval(animateCode[poo]);
+				//console.log('inner i: '+poo);
+				//console.log(animateCode[poo]);
+			}
+			
+			animateCode=[];
+			//console.log(animateCode);
+			goBack();
+			return false;
+		}
+		
+	}
+	function animateGo(L1,L2,L3,fr,c,shake){
+		if (timeBeast!=null){
+			window.clearTimeout(timeBeast)
+			timeBeast=null;
+			//console.log('stoppedTimer');
+		}
+		aCounter=0;
+		animateList=L3;
+		animateAlways=L1;
+		animateFlash=L2;
+		animateCode=c;
+		frameRate=fr;
+		worldShake=shake;
+		toAnimate();
+			
+	}
+	
+	
+	//FUNCTIONS FOR MAKING MAIN SCREEN
+	
+	//DRAW WORLD
+	function drawWorld(a){
+		
+		//UP DATE WHAT HAS BEEN SEEN
+		whereBeen[whereAt[0]][whereAt[1]]=1;
+		
+		//FIRST DRAW RANDOM GRASS
+		if (a==0){
+			var grassRandom=Math.floor((Math.random()*3)+1);
+			Draw('grass'+grassRandom);
+		}
+		else{
+			Draw('grass1');
+		}
+		
+		//NOW DRAW TREES ETC.
+		var i;
+		for (i=0;i<theLook[whereAt[0]][whereAt[1]].length;i++){
+			Draw(theLook[whereAt[0]][whereAt[1]][i]);
+		}
+	
+		var u=Locus[whereAt[0]][whereAt[1]][0];
+		var l=Locus[whereAt[0]][whereAt[1]][1];
+		var r=Locus[whereAt[0]][whereAt[1]][2];
+		var d=Locus[whereAt[0]][whereAt[1]][3];
+		
+		
+		killDirections(u,l,r,d); 
+		makeDirections(u,l,r,d); 
+		makeTop();
+		showHealth(health);			
+	}
+	
+	//MAKE THE TOP BAR
+	function makeTop(){
+		Draw('topBtn');
+		canvas.addEventListener('click',topMap);	
+		canvas.addEventListener('click',topBag);	
+	}
+	
+	//SHOW HEALTH
+	function showHealth(hh){
+		if (hh==1 || hh==2 || hh==3){
+			hh='health'+hh;
+			Draw(hh);
+		}
+		else{
+			gameMessage='game over';
+			gameOver();
+		}
+	
+	}
+	function gameOver(){
+		window.open('gameover.html','_self');
+	}
+		
+	
+	
+	//DRAW DIRECTION PAD
+	function makeDirections(u,l,r,d){
+		
+		if (u==1){
+			Draw('upBtn');
+			//window.addEventListener('keydown',hitUp);
+			canvas.addEventListener('click',clickedUp);}
+		if (d==1){
+			Draw('dwnBtn');
+			//window.addEventListener('keydown',hitDown);
+			canvas.addEventListener('click',clickedDown);}
+		if (l==1){
+			Draw('lftBtn');
+			//window.addEventListener('keydown',hitLeft);
+			canvas.addEventListener('click',clickedLeft);}
+		if (r==1){
+			Draw('rgtBtn');
+			//window.addEventListener('keydown',hitRight);
+			canvas.addEventListener('click',clickedRight);}	
+	}
+	
+	function throwIt(apple){
+		if (apple=='rock'){
+			Draw('shootRock');
+			
+		}
+		if (apple=='purp'){
+			Draw('shootPurp');
+			
+		}
+		if (apple=='green'){
+			Draw('shootGreen');
+		}
+		window.addEventListener('keypress',shooter);
+		canvas.addEventListener('click',shoot);
+	}
+	
+	
+	
+	//TURT ATTACK
+	function turtAttack(){
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		
+		killDirections(u,l,r,d);
+		if (turtTime1!=null){
+			window.clearTimeout(turtTime1);
+			turtTime1=null;
+		}
+		if (turtTime2!=null){
+			window.clearTimeout(turtTime2);
+			turtTime2=null;
+		}
+		if (turtTime3!=null){
+			window.clearTimeout(turtTime3);
+			turtTime3=null;
+		}
+		if (turtTime4!=null){
+			window.clearTimeout(turtTime4);
+			turtTime4=null;
+		}
+		
+	
+		//console.log(turtCount[0]);
+		inAttackTurt=1;
+		//console.log(inAttackTurt);
+		didMove=1;
+		
+		var tempList1=[];
+		var tempList=[];
+		
+		if (turtCount[0]==2 || turtCount[0]==3){
+			canvasSetUp();
+		}
+		
+		clearTimeout(timeHelp);
+		drawWorld(0);
+		killDirections(u,l,r,d);
+		killBag();
+		killMap();
+		
+		//console.log('turtCount: '+turtCount[0]);
+		
+		
+		if (turtCount[0]==0){
+			if (turtTime1!=null){
+				window.clearTimeout(turtTime1);
+				turtTime1=null;
+			}
+			if (turtTime2!=null){
+				window.clearTimeout(turtTime2);
+				turtTime2=null;
+			}
+			if (turtTime3!=null){
+				window.clearTimeout(turtTime3);
+				turtTime3=null;
+			}
+			if (turtTime4!=null){
+				window.clearTimeout(turtTime4);
+				turtTime4=null;
+			}
+			tempList=[['turt1'],['turt1'],['turt1'],['turt2'],['turt2'],['turt2'],['turt2'],['turt3'],['turt3'],['turt4'],['turt5']];
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList1,tempList,300,['turtCount[0]=1'],0);
+			
+		}
+		//ONCE YOU HAVE SEEN THE TURT
+		if (turtCount[0]==1){
+			if (turtTime1!=null){
+				window.clearTimeout(turtTime1);
+				turtTime1=null;
+			}
+			if (turtTime2!=null){
+				window.clearTimeout(turtTime2);
+				turtTime2=null;
+			}
+			if (turtTime3!=null){
+				window.clearTimeout(turtTime3);
+				turtTime3=null;
+			}
+			if (turtTime4!=null){
+				window.clearTimeout(turtTime4);
+				turtTime4=null;
+			}
+			var divheight=(1000/2100)*minner;
+			Main.innerHTML='';
+			Main.innerHTML='<div align="center"><img src="img/Top1.png" style="width:'+minner+';"></div><div id="turt question" style="height:'+divheight+';"></div><div align="center"><img src="img/1_turt_banner.png" id="bottom" style="width:'+minner+';"></div> </div>';
+			turtQuestion=document.getElementById('turt question');
+			
+			var theQuestion='What is $$';
+			if (whichLevel=='times'){
+				whichQuestion=[];
+				whichQuestion.push(eval(Times));
+				whichQuestion.push(eval(Times));
+				whichQuestion.push(whichQuestion[0]*whichQuestion[1]);
+				theQuestion=theQuestion+whichQuestion[0]+'\\times'+whichQuestion[1]+'=?$$';
+			}
+			if (whichLevel=='add'){
+				whichQuestion=[];
+				whichQuestion.push(eval(Add));
+				whichQuestion.push(eval(Add));
+				whichQuestion.push(whichQuestion[0]+whichQuestion[1]);
+				theQuestion=theQuestion+whichQuestion[0]+'+'+whichQuestion[1]+'=?$$';
+			}
+			if (whichLevel=='all'){
+				whichQuestion=[];
+				var chooseForMe=Math.floor((Math.random()*2)+1);
+				if (chooseForMe==1){
+					whichQuestion.push(eval(Times));
+					whichQuestion.push(eval(Times));
+					whichQuestion.push(whichQuestion[0]*whichQuestion[1]);
+				theQuestion=theQuestion+whichQuestion[0]+'\\times'+whichQuestion[1]+'=?$$';
+					
+
+					//THIS IS TIMES	
+				}
+				if (chooseForMe==2){
+					whichQuestion.push(eval(Add));
+					whichQuestion.push(eval(Add));
+					whichQuestion.push(whichQuestion[0]+whichQuestion[1]);
+					theQuestion=theQuestion+whichQuestion[0]+'+'+whichQuestion[1]+'=?$$';
+					//THIS IS ADD
+					
+				}
+			}
+			turtQuestion.innerHTML=theQuestion+'<input type="text" id="boom"><button type="button" class="btn btn-primary btn-lg" id="tryBtn">Try</button>';
+			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+			
+			turtBtn=document.getElementById('tryBtn');
+			turtValue=document.getElementById('boom');
+			turtValue.focus();
+			turtValue.select();
+			turtBottom=document.getElementById('bottom');
+			var AllSource=document.createAttribute('src');
+			turtBtn.addEventListener('click',checkAnswer);
+			window.addEventListener('keypress',checkEnterTurt);
+			var turtCounter=0;
+			turtTime1=setTimeout(function(){
+				AllSource.value='img/2_turt_banner.png';
+				turtBottom.setAttributeNode(AllSource);
+				turtTime2=setTimeout(function(){
+					AllSource.value='img/3_turt_banner.png';
+					turtBottom.setAttributeNode(AllSource);
+					turtTime3=setTimeout(function(){
+						AllSource.value='img/4_turt_banner.png';
+						turtBottom.setAttributeNode(AllSource);
+						turtTime4=setTimeout(function(){
+							gameMessage='times up';
+							turtCount[0]=3;
+							//canvasSetUp();
+							turtAttack();
+						},4000);
+					},2000);
+				},2000);
+			},3000);
+			
+		
+		}
+		
+		
+		if (turtCount[0]==3){
+			//WRONG ANSWER GIVEN
+			if (turtTime1!=null){
+				window.clearTimeout(turtTime1);
+				turtTime1=null;
+			}
+			if (turtTime2!=null){
+				window.clearTimeout(turtTime2);
+				turtTime2=null;
+			}
+			if (turtTime3!=null){
+				window.clearTimeout(turtTime3);
+				turtTime3=null;
+			}
+			if (turtTime4!=null){
+				window.clearTimeout(turtTime4);
+				turtTime4=null;
+			}
+			if (gameMessage=='times up'){
+				tempList=[['turtDance10'],['turtDance11'],['turtDance12'],['turtDance13'],['turtDance14'],['turtDance15'],['turtDance16'],['turtDance17'],['turtDance18']];
+				if (animateId!=null){
+					window.cancelAnimationFrame(animateId);
+					animateId=null;
+					//console.log('weird cancel frame');
+				}
+				animateGo(tempList1,tempList1,tempList,300,['health=health-1','gameMessage="turt hit you"','turtAttack()'],1);
+				if (health==0){
+					gameOver();
+					return false;
+				}
+			}
+			
+			if (gameMessage=='wrong answer'){
+			
+				tempList=[['turtDance1'],['turtDance2'],['turtDance3'],['turtDance4'],['turtDance5'],['turtDance6'],['turtDance7'],['turtDance8'],['turtDance9'],['turtDance10'],['turtDance11'],['turtDance12'],['turtDance13'],['turtDance14'],['turtDance15'],['turtDance16'],['turtDance17'],['turtDance18']];
+				if (animateId!=null){
+					window.cancelAnimationFrame(animateId);
+					animateId=null;
+					//console.log('weird cancel frame');
+				}
+				animateGo(tempList1,tempList1,tempList,300,['health=health-1','gameMessage="turt hit you"','turtAttack()'],1);
+			}
+		}
+		
+		if (gameMessage=='turt hit you'){
+				tempList=[['smokeOut1'],['smokeOut2'],['smokeOut3']];
+				if (animateId!=null){
+					window.cancelAnimationFrame(animateId);
+					animateId=null;
+					//console.log('weird cancel frame');
+				}
+				animateGo(tempList1,tempList1,tempList,300,['gameMessage="turt beat"','trainingMessage[4]=""','inAttackTurt=0','turtCount[0]=0','goBack()'],1);
+			}
+		
+	
+		
+		if (turtCount[0]==2){
+			//CORRECT ANSWER GIVEN
+			if (turtTime1!=null){
+				window.clearTimeout(turtTime1);
+				turtTime1=null;
+			}
+			if (turtTime2!=null){
+				window.clearTimeout(turtTime2);
+				turtTime2=null;
+			}
+			if (turtTime3!=null){
+				window.clearTimeout(turtTime3);
+				turtTime3=null;
+			}
+			if (turtTime4!=null){
+				window.clearTimeout(turtTime4);
+				turtTime4=null;
+			}
+			gameMessage='beat turt';
+			turtCount[0]=0;
+			trainingMessage[4]='';
+			tempList=[['turtDef1'],['turtDef1'],['turtDef2'],['turtDef2'],['turtDef3'],['turtSad1'],['turtSad2'],['turtSad3'],['turtSad4'],['smokeOut1'],['smokeOut2'],['smokeOut3']];
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			
+			animateGo(tempList1,tempList1,tempList,300,['turtCount[0]=0','inAttackTurt=0','goBack()'],1);
+			turtCount[0]=0;
+		}
+		return false;
+	}
+	
+	function checkEnterTurt(e){
+		if (e.key=='Enter'){
+			checkAnswer();
+			
+		}
+	}
+	
+	function checkAnswer(){
+		window.removeEventListener('keypress',checkEnterTurt);
+		if (turtTime1!=null){
+			window.clearTimeout(turtTime1);
+			turtTime1=null;
+		}
+		if (turtTime2!=null){
+			window.clearTimeout(turtTime2);
+			turtTime2=null;
+		}
+		if (turtTime3!=null){
+			window.clearTimeout(turtTime3);
+			turtTime3=null;
+		}
+		if (turtTime4!=null){
+			window.clearTimeout(turtTime4);
+			turtTime4=null;
+		}
+		//console.log(whichQuestion[2]);
+		if (parseInt(turtValue.value)==whichQuestion[2] || turtValue.value=='god') {
+			turtCount[0]=2;
+			turtQuestion.innerHTML="<h1><p class='text-success'>GREAT JOB!</p><p class='text-success'> THAT'S THE</p><p class='text-success'> CORRECT ANSWER!!!</p></h1>";
+			//console.log('correct');
+			timeHelp=setTimeout(function(){turtAttack();},3000);
+		
+		}
+		if (parseInt(turtValue.value)!=whichQuestion[2]&& turtValue.value!='god' ){
+			turtCount[0]=3;
+			gameMessage='wrong answer';
+			console.log('incorrect');
+			turtQuestion.innerHTML="<h1><p class='text-danger'>SORRY!</p> <p class='text-danger'>THAT'S THE </p><p class='text-danger'>WRONG ANSWER!!!</p></h1>";
+			
+			timeHelp=setTimeout(function(){turtAttack();},3000);
+			
+		}
+		//console.log(turtValue.value)
+	}
+	
+	
+	
+	
+	function dragonAttack(){
+	
+	if (dragonTime1!=null){
+			window.clearTimeout(dragonTime1);
+			dragonTime1=null;
+		}
+		if (dragonTime2!=null){
+			window.clearTimeout(dragonTime2);
+			dragonTime2=null;
+		}
+		if (dragonTime3!=null){
+			window.clearTimeout(dragonTime3);
+			dragonTime3=null;
+		}
+		if (dragonTime4!=null){
+			window.clearTimeout(dragonTime4);
+			dragonTime4=null;
+		}
+		if (dragonTimer!=null){
+			window.clearTimeout(dragonTimer);
+			dragonTimer=null;
+		}
+		
+	
+		//console.log(turtCount[0]);
+		inAttackDragon=1;
+		//console.log(inAttackTurt);
+		didMove=1;
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		var tempList1=[];
+		var tempList=[];
+		
+		if (dragonHealth==0){
+			canvasSetUp();
+		}
+		
+		clearTimeout(timeHelp);
+		drawWorld(0);
+		killDirections(u,l,r,d);
+		killBag();
+		killMap();
+		
+		//console.log('turtCount: '+turtCount[0]);
+		//console.log(dragonCount);
+		//console.log(dragonHealth);
+		if (dragonCount==0){
+			if (dragonTime1!=null){
+				window.clearTimeout(dragonTime1);
+				dragonTime1=null;
+			}
+			if (dragonTime2!=null){
+				window.clearTimeout(dragonTime2);
+				turtTime2=null;
+			}
+			if (dragonTime3!=null){
+				window.clearTimeout(dragonTime3);
+				turtTime3=null;
+			}
+			if (dragonTime4!=null){
+				window.clearTimeout(dragonTime4);
+				turtTime4=null;
+			}
+			if (dragonTimer!=null){
+			window.clearTimeout(dragonTimer);
+			dragonTimer=null;
+		}
+			tempList=[['dragonFly1'],['dragonFly2'],['dragonFly3'],['dragonMain'],['dragonMain'],['dragonFire1'],['dragonFire2'],['dragonFire3'],['dragonFire4'],['dragonFire5'],['dragonFire6'],['dragonFire7']];
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList1,tempList,300,['dragonCount=1'],0);
+			
+		}
+		
+		
+		
+		
+		
+		//ONCE YOU HAVE SEEN THE DRAGON
+		if (dragonCount==1 && dragonHealth!=0){
+			if (dragonTime1!=null){
+				window.clearTimeout(dragonTime1);
+				dragonTime1=null;
+			}
+			if (dragonTime2!=null){
+				window.clearTimeout(dragonTime2);
+				dragonTime2=null;
+			}
+			if (dragonTime3!=null){
+				window.clearTimeout(dragonTime3);
+				dragonTime3=null;
+			}
+			if (dragonTime4!=null){
+				window.clearTimeout(dragonTime4);
+				dragonTime4=null;
+			}
+			if (dragonTimer!=null){
+				window.clearTimeout(dragonTimer);
+				dragonTimer=null;
+			}
+			var divheight=(1000/2100)*minner;
+			Main.innerHTML='';
+			//console.log(health);
+			
+			//var soItIs=toString(health)+toString(dragonHealth)'
+			
+			//console.log(whichBag);
+			if (whichBag=='green'){
+				Main.innerHTML='<div align="center"><img src="img/Dragon/GD'+health+dragonHealth+'.png" style="width:'+minner+';"></div><div id="dragon question" style="height:'+divheight+';"></div><div align="center"><img src="img/Dragon/DragonC4.png" id="bottom" style="width:'+minner+';"></div> </div>';
+			}
+			if (whichBag=='purple'){
+				Main.innerHTML='<div align="center"><img src="img/Dragon/PD'+health+dragonHealth+'.png" style="width:'+minner+';"></div><div id="dragon question" style="height:'+divheight+';"></div><div align="center"><img src="img/Dragon/DragonC4.png" id="bottom" style="width:'+minner+';"></div> </div>';
+			}
+			
+			
+			dragonQuestion=document.getElementById('dragon question');
+			
+			var theQuestion='What is $$';
+			if (whichLevel=='times'){
+				whichQuestion=[];
+				whichQuestion.push(eval(Times));
+				whichQuestion.push(eval(Times));
+				whichQuestion.push(whichQuestion[0]*whichQuestion[1]);
+				theQuestion=theQuestion+whichQuestion[0]+'\\times'+whichQuestion[1]+'=?$$';
+			}
+			if (whichLevel=='add'){
+				whichQuestion=[];
+				whichQuestion.push(eval(Add));
+				whichQuestion.push(eval(Add));
+				whichQuestion.push(whichQuestion[0]+whichQuestion[1]);
+				theQuestion=theQuestion+whichQuestion[0]+'+'+whichQuestion[1]+'=?$$';
+			}
+			if (whichLevel=='all'){
+				whichQuestion=[];
+				var chooseForMe=Math.floor((Math.random()*2)+1);
+				if (chooseForMe==1){
+					whichQuestion.push(eval(Times));
+					whichQuestion.push(eval(Times));
+					whichQuestion.push(whichQuestion[0]*whichQuestion[1]);
+				theQuestion=theQuestion+whichQuestion[0]+'\\times'+whichQuestion[1]+'=?$$';
+					
+
+					//THIS IS TIMES	
+				}
+				if (chooseForMe==2){
+					whichQuestion.push(eval(Add));
+					whichQuestion.push(eval(Add));
+					whichQuestion.push(whichQuestion[0]+whichQuestion[1]);
+					theQuestion=theQuestion+whichQuestion[0]+'+'+whichQuestion[1]+'=?$$';
+					//THIS IS ADD
+					
+				}
+			}
+			dragonQuestion.innerHTML=theQuestion+'<input type="text" id="boom"><button type="button" class="btn btn-primary btn-lg" id="tryBtn">Try</button>';
+			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+			
+			turtBtn=document.getElementById('tryBtn');
+			turtValue=document.getElementById('boom');
+			turtValue.focus();
+			turtValue.select();
+			dragonBottom=document.getElementById('bottom');
+			var AllSource=document.createAttribute('src');
+			turtBtn.addEventListener('click',checkDragonAnswer);
+			window.addEventListener('keypress',checkEnterDragon);
+			dragonTime1=setTimeout(function(){
+				AllSource.value='img/Dragon/DragonC3.png';
+				dragonBottom.setAttributeNode(AllSource);
+				dragonTime2=setTimeout(function(){
+					AllSource.value='img/Dragon/DragonC2.png';
+					dragonBottom.setAttributeNode(AllSource);
+					dragonTime3=setTimeout(function(){
+						AllSource.value='img/Dragon/DragonC1.png';
+						dragonBottom.setAttributeNode(AllSource);
+						dragonTime4=setTimeout(function(){
+							health=health-1;
+							if (health==0){
+								gameOver();
+								return false;
+							}
+							if (whichBag=='green'){
+								Main.innerHTML='<div align="center"><img src="img/Dragon/GD'+health+dragonHealth+'.png" style="width:'+minner+';"></div><div id="turt question" style="height:'+divheight+';"></div><div align="center"><img src="img/Dragon/DragonC0.png" id="bottom" style="width:'+minner+';"></div> </div>';
+							}
+							if (whichBag=='purple'){
+								Main.innerHTML='<div align="center"><img src="img/Dragon/PD'+health+dragonHealth+'.png" style="width:'+minner+';"></div><div id="turt question" style="height:'+divheight+';"></div><div align="center"><img src="img/Dragon/DragonC0.png" id="bottom" style="width:'+minner+';"></div> </div>';
+							}
+
+
+							turtQuestion=document.getElementById('turt question');
+							
+							
+							turtQuestion.innerHTML='<h1><p class="text-danger">TOO SLOW!!!</p></h1><h3><p class="text-danger">YOU ONLY HAVE '+health+'</p><p class="text-danger">INCORRECT ANSWERS LEFT!!</p></h3>';
+							dragonTimer=setTimeout(function(){
+								
+								dragonAttack();
+							},4000);	
+						},4000);
+					},2000);
+				},2000);
+			},3000);
+			
+		
+		}
+		
+		
+		if (dragonCount==1 && dragonHealth==0){
+			window.open('youwin.html','_self');
+			console.log('you won... yeah!!');
+			return false;
+			//winning screen!!!
+		}
+	}
+	
+	function checkEnterDragon(e){
+		if (e.key=='Enter'){
+			checkDragonAnswer();
+			
+		}
+		
+	}
+	
+	
+	function checkDragonAnswer(){
+		window.removeEventListener('keypress',checkEnterDragon);
+		if (dragonTime1!=null){
+			window.clearTimeout(dragonTime1);
+			dragonTime1=null;
+		}
+		if (dragonTime2!=null){
+			window.clearTimeout(dragonTime2);
+			dragonTime2=null;
+		}
+		if (dragonTime3!=null){
+			window.clearTimeout(dragonTime3);
+			dragonTime3=null;
+		}
+		if (dragonTime4!=null){
+			window.clearTimeout(dragonTime4);
+			dragonTime4=null;
+		}
+		if (dragonTimer!=null){
+			window.clearTimeout(dragonTimer);
+			dragonTimer=null;
+		}
+		var divheight=(1000/2100)*minner;
+		//console.log(whichQuestion[2]);
+		//console.log(turtValue.value);
+		if (parseInt(turtValue.value)==whichQuestion[2] || turtValue.value=='god' ){
+			dragonHealth=dragonHealth-1;
+			
+			if (dragonHealth!=0){
+				//console.log('draong health: '+dragonHealth);
+				if (whichBag=='green'){
+					Main.innerHTML='<div align="center"><img src="img/Dragon/GD'+health+dragonHealth+'.png" style="width:'+minner+';"></div><div id="turt question" style="height:'+divheight+';"></div><div align="center"><img src="img/Dragon/DragonC000.png" id="bottom" style="width:'+minner+';"></div> </div>';
+				}
+				if (whichBag=='purple'){
+					Main.innerHTML='<div align="center"><img src="img/Dragon/PD'+health+dragonHealth+'.png" style="width:'+minner+';"></div><div id="turt question" style="height:'+divheight+';"></div><div align="center"><img src="img/Dragon/DragonC000.png" id="bottom" style="width:'+minner+';"></div> </div>';
+				}
+				turtQuestion=document.getElementById('turt question');
+				turtQuestion.innerHTML="<h1><p class='text-success'>GREAT JOB!</p></h1></h3><p class='text-success'> THAT'S THE CORRECT ANSWER</p><p class='text-success'> ONLY "+dragonHealth+" MORE TO GO!	</p></h3>";
+
+				console.log('correct');
+				timeHelp=setTimeout(function(){dragonAttack();},3000);
+
+			}
+			if (dragonHealth==0){
+				dragonAttack();
+			}
+		}
+		if (parseInt(turtValue.value)!=whichQuestion[2] && (turtValue.value!='god' )){
+			gameMessage='wrong answer';
+			health=health-1;
+			if (health==0){gameOver();}
+			
+			if (whichBag=='green' && health!=0){
+				Main.innerHTML='<div align="center"><img src="img/Dragon/GD'+health+dragonHealth+'.png" style="width:'+minner+';"></div><div id="turt question" style="height:'+divheight+';"></div><div align="center"><img src="img/Dragon/DragonC00.png" id="bottom" style="width:'+minner+';"></div> </div>';
+			}
+			if (whichBag=='purple' && health!=0){
+				Main.innerHTML='<div align="center"><img src="img/Dragon/PD'+health+dragonHealth+'.png" style="width:'+minner+';"></div><div id="turt question" style="height:'+divheight+';"></div><div align="center"><img src="img/Dragon/DragonC00.png" id="bottom" style="width:'+minner+';"></div> </div>';
+			}
+
+
+			turtQuestion=document.getElementById('turt question');
+			
+			if (health==1){
+				turtQuestion.innerHTML='<h1><p class="text-danger">SORRY!!!</p></h1><h3><p class="text-danger">WRONG ANSWER...</p><p class="text-danger"> YOU ONLY HAVE '+health+'</p><p class="text-danger">INCORRECT ANSWER LEFT!!</p></h3>';
+			}
+			if (health==2){
+				turtQuestion.innerHTML='<h1><p class="text-danger">SORRY!!!</p></h1><h3><p class="text-danger">WRONG ANSWER...</p><p class="text-danger"> YOU ONLY HAVE '+health+'</p><p class="text-danger">INCORRECT ANSWERS LEFT!!</p></h3>';
+			}
+			
+			
+			console.log('incorrect');
+			
+			
+			timeHelp=setTimeout(function(){dragonAttack();},3000);
+			
+		}
+		//console.log(turtValue.value)
+	}
+	
+	
+	
+	
+	function countDownAttack(){
+		beastCount[0]=beastCount[0]+1;
+		beastAttack();
+	}
+	
+	//BEAST ATTACK
+	function beastAttack(){
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		killDirections(u,l,r,d);
+		didMove=1;
+		inAttackBeast=1;
+		
+		canvasSetUp();
+		if (beastCount[2]==1){
+			if (timeBeast!=null){
+				window.clearTimeout(timeBeast)
+				timeBeast=null;
+			}
+			//clearAllTimers();
+			//console.log('get out!');
+			tempList1=[];
+			tempList2=[];
+			tempList3=[['puffSmoke'],['endSmoke']];
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+					//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList2,tempList3,300,['trainingMessage[2]=""','beastCount=[0,0,0]','gameMessage="beast beat"','inAttackBeast=0','goBack()'], 1);
+			window.removeEventListener('keypress',shooter);
+			window.clearTimeout(timeHelp);
+			return false;
+		}
+	
+		//console.log(trainingMessage[0]);
+		
+		
+		
+		var tempList1=[];
+		var tempList2=[];
+		var tempList3=[];
+		//console.log('health: '+health);
+		if (health!=0){
+			drawWorld(0);
+			killDirections(u,l,r,d);
+			killMap();
+			Draw('beast');
+		}
+		if (health==0){
+			trainingMessage=[];
+			gameMessage='';
+			gameOver();
+			return false;
+		}
+		
+		//COUNT DOWN TO BEAST HITTING YOU!
+		if (timeBeast!=null){
+			window.clearTimeout(timeBeast)
+			timeBeast=null;
+			
+		}
+		
+		if (timeBeast==null){
+			//console.log('holyCrap: '+holyCrap);
+			//console.log('started timmer');
+			timeBeast=setTimeout(countDownAttack,2000);
+		}
+		
+	
+		
+		//console.log(beastCount[0]);
+		
+		if (beastCount[0]>=1 && gameMessage!='rock thrown'){
+			Draw('star1');
+			
+		}
+		if (beastCount[0]>=2 && gameMessage!='rock thrown'){
+			Draw('star2');
+			
+		}
+		if (beastCount[0]>=3 && gameMessage!='rock thrown'){
+			Draw('star3'); 
+
+		}
+		if (beastCount[0]==4 && gameMessage!='rock thrown'){
+			beastCount[2]=1;
+			if (gameMessage=='shoot rock'){
+				canvas.removeEventListener('click',shoot);
+			}
+			if (trainingMessage[3]=='training' && trainingMessage[1]=='use rock'){
+				tempList1.push('bagClick');
+				
+			}
+			if (gameMessage=='shoot rock'){
+				tempList1.push('shootRock')
+			}
+			if (gameMessage=='shoot purp'){
+				tempList1.push('shootPurp');
+			}
+			if (gameMessage=='shoot green'){
+				tempList1.push('shootGreen');
+			}
+		
+			tempList2=['star1','star2','star3','star4'];
+			tempList3=[['beast'],['bunnyA1'],['bunnyA2'],['bunnyA3'],['bunnyA4'],['bunnyA5']];
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList2,tempList3,300,["trainingMessage[0]='watch out'",'health=health-1','beastCount[0]=0'],0);	
+		}
+		
+		if (health==0){
+			gameMessage='';
+			trainingMessage=[];
+			gameOver();
+			return false;
+		}
+		
+		
+		//console.log(gameMessage);
+		if (gameMessage=='shoot purp'){
+			trainingMessage[1]='';
+			Draw('beast');
+			throwIt('purp');
+		}
+		if (gameMessage=='shoot green'){
+			Draw('beast');
+			throwIt('green');
+		}
+		
+		if (gameMessage=='shoot rock'){
+			trainingMessage[1]='';
+			Draw('beast');
+			throwIt('rock');
+		}
+		if (gameMessage=='purp thrown'){
+			bag[3]=bag[3]-1;
+			tempList1=['beast'];
+			tempList2=[];
+			tempList3=[['TP1'],['TP2'],['TP3'],['TP4'],['TP5'],['TP6'],['TP7'],['TP8'],['TP9']];
+			//do the throwing rock animation here!!!
+			
+			if (timeBeast!=null){
+				window.clearTimeout(timeBeast)
+				timeBeast=null;
+				//console.log('stoppedTimer');
+			}
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList2,tempList3,50,['gameMessage="potion thrown"'],1);
+			
+		}
+		
+		if (gameMessage=='green thrown'){
+			bag[2]=bag[2]-1;
+			tempList1=['beast'];
+			tempList2=[];
+			tempList3=[['TG1'],['TG2'],['TG3'],['TG4'],['TG5'],['TG6'],['TG7'],['TG8'],['TG9']];
+			//do the throwing rock animation here!!!
+			
+			if (timeBeast!=null){
+				window.clearTimeout(timeBeast)
+				timeBeast=null;
+				//console.log('stoppedTimer');
+			}
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList2,tempList3,50,['gameMessage="potion thrown"'],1);
+			
+		}
+		
+		if (gameMessage=='rock thrown'){
+			bag[1]=bag[1]-1;
+			tempList1=['beast'];
+			tempList2=[];
+			tempList3=[['tRock1'],['tRock2'],['tRock3'],['tRock4'],['tRock5'],['tRock6'],['tRock7'],['tRock8'],['tRock9'],['tRock10'],['tRock11'],['tRock12'],['tRock13'],['tRock14'],['tRock15'],['tRock16']];
+			//do the throwing rock animation here!!!
+			
+			if (timeBeast!=null){
+				window.clearTimeout(timeBeast)
+				timeBeast=null;
+				//console.log('stoppedTimer');
+			}
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList2,tempList3,50,['gameMessage="rock thrown2"'],1);
+			
+		}
+		
+		if (gameMessage=='potion thrown'){
+			if (timeBeast!=null){
+				window.clearTimeout(timeBeast)
+				timeBeast=null;
+				//need to konw which thing to get rid of??? i.e. purple or green....
+				//console.log('stoppedTimer');
+			}
+			window.clearTimeout(timeHelp);
+			beastCount[0]=0;
+			trainingMessage[2]="";
+			tempList1=[];
+			tempList2=[];
+			tempList3=[['smokeOut1'],['smokeOut2'],['smokeOut3']];
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList2,tempList3,300,['trainingMessage[2]=""','beastCount=[0,0,0]','gameMessage="beat beast"','inAttackBeast=0','goBack()'], 1);
+			window.removeEventListener('keypress',shooter);
+			window.clearTimeout(timeHelp);
+		}
+		
+		
+		if (gameMessage=='rock thrown2'){
+			if (timeBeast!=null){
+				window.clearTimeout(timeBeast)
+				timeBeast=null;
+				
+				//console.log('stoppedTimer');
+			}
+			window.clearTimeout(timeHelp);
+			beastCount[0]=0;
+			trainingMessage[2]="";
+			tempList1=[];
+			tempList2=[];
+			tempList3=[['bunnySad1'],['bunnySad2'],['bunnySad3'],['bunnySad4'],['bunnySad3'],['bunnySad2'],['bunnySad1'],['bunnySad2'],['bunnySad3'],['bunnySad4'],['bunnySad3'],['bunnySad2'],['bunnySad1'],['puffSmoke'],['endSmoke']];
+			if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+			animateGo(tempList1,tempList2,tempList3,300,['trainingMessage[2]=""','beastCount=[0,0,0]','gameMessage="beat beast"','inAttackBeast=0','goBack()'], 1);
+			window.clearTimeout(timeHelp);
+		}
+		
+		
+
+	
+						
+						
+		//console.log(trainingMessage[0]);
+		//console.log('health: '+health);
+		
+		
+		
+		
+		//IF BEAST IS ATTACKING IN TRAINING lAND
+		/*
+		if (trainingMessage[3]=='training' && health!=3 && trainingMessage[0]=='watch out'){
+			Draw('wizzyCareBunny');
+			//console.log('in watch out...');
+			trainingMessage[0]='';
+		}
+		*/
+		if (trainingMessage[3]=='training' && trainingMessage[1]=='use rock'){
+			killDirections(u,l,r,d);
+			killMap();
+			Draw('beast');
+			Draw('bagClick');
+		}
+		if (trainingMessage[3]=='training' && beastCount[1]==0 && gameMessage!='beat beast'){
+			Draw('beast');
+			killDirections(u,l,r,d);
+			killBag();
+			killMap();
+			if (timeBeast!=null){
+				window.clearTimeout(timeBeast)
+				timeBeast=null;
+				//console.log('stoppedTimer');
+			}
+			setTimeout(function(){
+				Draw('wizzyBunny');
+				setTimeout(function(){
+					Draw('wizzyBag');
+					setTimeout(function(){
+						beastCount[1]=1;
+						trainingMessage[1]='use rock'
+						beastAttack();
+					},2000);
+				},2000);
+			},1000);
+		}
+		
+		
+		return false;
+	}
+	
+
+	function hitUp(e){
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		if (e.key=='ArrowUp' && inBag==0 && inMap==0 && Locus[whereAt[0]][whereAt[1]][0]==1){
+			wasPadUsed=1;
+			whereAt[1]=whereAt[1]+1;
+			didMove=0;
+			currentScreen=[];
+			killDirections(u,l,r,d);
+			goBack();
+			
+		}
+		//console.log(e.keyCode);
+	}
+	
+	
+	//FUNCTIONS FOR CLICKING MAIN SCREEN
+	function clickedUp(e){
+		var elemLeft=canvas.offsetLeft;
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+		
+		var my=(481/572)*minner;
+		var my2=(452/572)*minner;
+		var my3=(508/572)*minner;
+				
+		var mx=(448/572)*minner;
+		var mx2=(463/572)*minner;
+		var mx3=(495/572)*minner;
+		var mx4=(510/572)*minner;
+				
+		var l1=((my-my2)/(mx-mx2))*(x-mx)+my;
+		var l2=((my2-my)/(mx3-mx4))*(x-mx3)+my2; 
+		var l3=((my-my3)/(mx4-mx3))*(x-mx3)+my3;
+		var l4=((my-my3)/(mx-mx2))*(x-mx)+my;
+					
+		if (my2<=y && y<=my3 && y>=l1 && y<=l4 && y>=l2 && y<=l3){
+			wasPadUsed=1;
+			whereAt[1]=whereAt[1]+1;
+			currentScreen=[];
+			didMove=0;
+			killDirections(u,l,r,d);
+			goBack();
+		}
+	}
+	
+	function hitDown(e){
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		if (e.key=='ArrowDown' && inBag==0 && inMap==0 && Locus[whereAt[0]][whereAt[1]][3]==1){
+			wasPadUsed=1;
+			whereAt[1]=whereAt[1]-1;
+			currentScreen=[];
+			didMove=0;
+			killDirections(u,l,r,d);
+			goBack();
+			/*
+			if (u==1){
+				window.removeEventListener('keydown',hitUp);
+			}
+			if (l==1){
+				window.removeEventListener('keydown',hitLeft);
+			}
+			if (r==1){
+				window.removeEventListener('keydown',hitRight);
+			}
+			if (d==1){
+				window.removeEventListener('keydown',hitDown);
+			}
+			*/
+		}
+		
+		
+	}
+	
+	function clickedDown(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+				
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+			
+		var my=(538/570)*minner;
+		var my2=(508/570)*minner;
+		var my3=(567/570)*minner;			
+				
+		var mx=(445/570)*minner;
+		var mx2=(461/570)*minner;
+		var mx3=(495/570)*minner;
+		var mx4=(510/570)*minner;
+				
+		var l1=((my-my2)/(mx-mx2))*(x-mx)+my;
+		var l2=((my2-my)/(mx3-mx4))*(x-mx3)+my2; 
+		var l3=((my-my3)/(mx4-mx3))*(x-mx3)+my3;
+		var l4=((my-my3)/(mx-mx2))*(x-mx)+my;
+				
+				
+		if (my2<=y && y<=my3 && y>=l1 && y<=l4 && y>=l2 && y<=l3){
+			wasPadUsed=1;
+			whereAt[1]=whereAt[1]-1;
+			currentScreen=[];
+			didMove=0;
+			killDirections(u,l,r,d);
+			goBack();		
+		}
+	}
+	function hitLeft(e){
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		if (e.key=='ArrowLeft' && inBag==0 && inMap==0 && Locus[whereAt[0]][whereAt[1]][1]==1){
+			wasPadUsed=1;
+			whereAt[0]=whereAt[0]-1;
+			currentScreen=[];
+			didMove=0;
+			killDirections(u,l,r,d);
+			goBack();
+			/*
+			if (u==1){
+				window.removeEventListener('keydown',hitUp);
+			}
+			if (l==1){
+				window.removeEventListener('keydown',hitLeft);
+			}
+			if (r==1){
+				window.removeEventListener('keydown',hitRight);
+			}
+			if (d==1){
+				window.removeEventListener('keydown',hitDown);
+			}
+			*/
+		}
+		
+	}
+	
+	function clickedLeft(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+				
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+
+		var my=(378/424)*minner;
+		var my2=(358/424)*minner;
+		var my3=(400/424)*minner;
+				
+				
+		var mx=(294/424)*minner;
+		var mx2=(306/424)*minner;
+		var mx3=(331/424)*minner;
+		var mx4=(342/424)*minner;
+				
+		var l1=((my-my2)/(mx-mx2))*(x-mx)+my;
+		var l2=((my2-my)/(mx3-mx4))*(x-mx3)+my2; 
+		var l3=((my-my3)/(mx4-mx3))*(x-mx3)+my3;
+		var l4=((my-my3)/(mx-mx2))*(x-mx)+my;
+				
+				
+		if (my2<=y && y<=my3 && y>=l1 && y<=l4 && y>=l2 && y<=l3){
+			wasPadUsed=1;
+			whereAt[0]=whereAt[0]-1;
+			currentScreen=[];
+			didMove=0;
+			killDirections(u,l,r,d);
+			goBack();
+		}
+	}
+	
+	function hitRight(e){
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		if (e.key=='ArrowRight' && inBag==0 && inMap==0 && Locus[whereAt[0]][whereAt[1]][2]==1){
+			wasPadUsed=1;
+			whereAt[0]=whereAt[0]+1;
+			currentScreen=[];
+			didMove=0;
+			killDirections(u,l,r,d);
+			goBack();
+			/*
+			if (u==1){
+				window.removeEventListener('keydown',hitUp);
+			}
+			if (l==1){
+				window.removeEventListener('keydown',hitLeft);
+			}
+			if (r==1){
+				window.removeEventListener('keydown',hitRight);
+			}
+			if (d==1){
+				window.removeEventListener('keydown',hitDown);
+			}
+			*/
+		}
+		
+	}
+	
+	function clickedRight(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+				
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+				
+		var my=(508/570)*minner;
+		var my2=(481/570)*minner;
+		var my3=(534/570)*minner;
+		
+		var mx=(496/570)*minner;
+		var mx2=(512/570)*minner;
+		var mx3=(545/570)*minner;
+		var mx4=(562/570)*minner;
+				
+		var l1=((my-my2)/(mx-mx2))*(x-mx)+my;
+		var l2=((my2-my)/(mx3-mx4))*(x-mx3)+my2; 
+		var l3=((my-my3)/(mx4-mx3))*(x-mx3)+my3;
+		var l4=((my-my3)/(mx-mx2))*(x-mx)+my;
+				
+				
+		if (my2<=y && y<=my3 && y>=l1 && y<=l4 && y>=l2 && y<=l3){	
+			wasPadUsed=1;
+			whereAt[0]=whereAt[0]+1;
+			didMove=0;
+			currentScreen=[];
+			killDirections(u,l,r,d);
+			goBack();		
+		}
+	}
+	
+	function topBag(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		var my=(14/401)*minner;
+		var my2=(42/401)*minner;
+		var mx=(25/401)*minner;
+		var mx2=(106/401)*minner;
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',topBag);
+			Main.innerHTML='';
+			showBag();
+			//console.log('Bag');	
+		}
+	}
+	
+	function topMap(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+				
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+		
+		var wy=(13/401)*minner;
+		var wy2=(41/401)*minner;
+		var wx=(314/401)*minner;
+		var wx2=(377/401)*minner;
+				
+		if (wy<=y && y<=wy2 && wx<=x && x<=wx2){
+			canvas.removeEventListener('click',topMap);
+			//Main.innerHTML='';
+			//startPlay();
+			showMap();
+		}	
+	}
+	function showBag(){
+		inBag=1;
+		Main.innerHTML='<div class="container"><div class="center" align="center"><h3>Loading Bag...</h3></div></div><div class="container"><div class="center"><div class="spinner-border text-primary" style="width: 8rem; height: 8rem;" role="status"><span class="sr-only">Loading...</span></div></div></div>';
+		timehelp=setTimeout(drawBag,15);
+	}
+	
+	function drawBag(){
+		if (timeBeast!=null){
+			window.clearTimeout(timeBeast);
+			timeBeast=null;
+			
+		}
+		inBag=1;
+		canvasSetUp();
+		if (whichBag='purple' || when==6){
+			Draw('purpBag');
+		}
+		if (whichBag='green'){
+			Draw('greenBag')
+		}
+		var xs=(323/424)*minner;
+		var ys=(69/424)*minner;
+				
+		var yr=(138/424)*minner;
+		var yg=(225/424)*minner;
+		var yp=(334/424)*minner;
+					
+		//number display
+		ctx.fillStyle='red';
+		ctx.font='28px arial';
+		
+		var fix0=bag[0]%2;
+		var fix1=bag[1]%4;
+		var fix2=bag[2]%4;
+		var fix3=bag[3]%4;
+		ctx.fillText('X '+fix0,xs,ys);
+		ctx.fillText('X '+fix1,xs,yr);
+		ctx.fillText('X '+fix2,xs,yg);
+		ctx.fillText('X '+fix3,xs,yp);
+		
+		if (trainingMessage[1]=='use rock'){
+			Draw('tryRock');
+		}
+					
+		canvas.addEventListener('click',bagBack);
+		
+	}
+	
+	function bagBack(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+	
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+				
+		var my=(11/424)*minner;
+		var my2=(67/424)*minner;
+		var mx=(22/424)*minner;
+		var mx2=(174/424)*minner;
+				
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){	
+			goBack();
+			canvas.removeEventListener('click',bagBack);
+		}
+		
+		var rx=(228/401)*minner;
+		var rx2=(267/401)*minner;
+		var ry=(107/401)*minner;
+		var ry2=(143/401)*minner;
+		
+		if (ry<=y && y<=ry2 && rx<=x && x<=rx2 && bag[0]!=0 && bag[1]!=0){	
+			gameMessage='shoot rock';
+			goBack();
+			canvas.removeEventListener('click',bagBack);
+		}
+		
+		var gx=(221/401)*minner;
+		var gx2=(257/401)*minner;
+		var gy=(171/401)*minner;
+		var gy2=(226/401)*minner;
+		
+		if (gy<=y && y<=gy2 && gx<=x && x<=gx2 && bag[0]!=0 && bag[2]!=0){	
+			gameMessage='shoot green';
+			goBack();
+			canvas.removeEventListener('click',bagBack);
+		}
+		
+		var px=(208/401)*minner;
+		var px2=(257/401)*minner;
+		var py=(271/401)*minner;
+		var py2=(338/401)*minner;
+		
+		if (py<=y && y<=py2 && px<=x && x<=px2 && bag[0]!=0 && bag[3]!=0){	
+			gameMessage='shoot purp';
+			goBack();
+			canvas.removeEventListener('click',bagBack);
+		}
+		
+		if(inAttackBeast!=1){
+			gameMessage='';
+		}
+		
+	}
+	function cheatTransport(){
+		if (parseInt(cheatInX.value)<=6 && 0<=parseInt(cheatInX.value) && parseInt(cheatInY.value)<=6 && 0<=parseInt(cheatInY.value)){
+		whereAt[0]=parseInt(cheatInX.value);
+		whereAt[1]=parseInt(cheatInY.value);
+		}
+		goBack();
+		cheatBtn.removeEventListener('click',cheatTransport);
+		Cheats.innerHTML='';
+	}
+	
+	function showMap(){
+		inMap=1;
+		Main.innerHTML='<div class="container"><div class="center" align="center"><h3>Loading Map...</h3></div></div><div class="container"><div class="center"><div class="spinner-border text-primary" style="width: 8rem; height: 8rem;" role="status"><span class="sr-only">Loading...</span></div></div></div>';
+		timehelp=setTimeout(drawMap,15);
+	
+		
+	}
+	function drawMap(){
+		console.log(when);
+		//barDiv.innerHTML='<div id="myBar"></div>'
+		if (when==6 || when==5){
+			if (whereBeen[5][5]==1 && whereBeen[4][6]==1){
+				whereBeen[5][7]=1;
+				whereBeen[5][6]=1;
+				whereBeen[6][6]=1;
+				whereBeen[6][7]=1;
+			}
+			if (whereBeen[5][3]==1){
+				whereBeen[6][3]=1;
+			}
+			if (whereBeen[5][4]==1){
+				whereBeen[6][4]=1;
+			}
+			if (whereBeen[5][1]==1 && whereBeen[4][2]==1){
+				whereBeen[5][2]=1;
+				whereBeen[6][2]=1;
+			}
+			if (whereBeen[5][5]==1){
+				whereBeen[6][5]=1;
+			}
+			if (whereBeen[1][3]==1 && whereBeen[2][2]==1){
+				whereBeen[1][2]=1;
+			}
+			if (whereBeen[0][6]==1){
+				whereBeen[0][7]=1;
+			}
+			if (whereBeen[1][6]==1){
+				whereBeen[1][7]=1;
+			}
+			if (whereBeen[2][6]==1){
+				whereBeen[2][7]=1;
+			}
+			if (whereBeen[3][6]){
+				whereBeen[3][7]=1;	
+			}
+			if (whereBeen[4][6]){
+				whereBeen[4][7]=1;
+			}
+			if (whereBeen[5][6]==1){
+				whereBeen[5][7]=1;
+				whereBeen[6][5]=1;
+				whereBeen[6][6]=1;
+				whereBeen[6][7]=1;
+			}
+		}
+		clearTimeout(timeHelp);
+		inMap=1;
+		canvasSetUp();
+		Draw(whichMap);
+		// need to draw back button and compass
+		var i;
+		var j;
+
+		for (i=0;i<mapXSize;i++){
+	
+			for (j=0;j<mapYSize;j++){
+				if (whereBeen[i][j]==0){
+					Draw(mapCover+i+j);
+				}
+			}
+		}
+		
+			
+		Draw(mapHere+whereAt[0]+whereAt[1]);
+		Draw('mapBackBtn');
+		Draw('mapCompass');
+		
+		if (GOD==1){
+			console.log('should be drawing super cheat');
+			Cheats.innerHTML='<input type="text" id="cheat in x"><input type="text" id="cheat in y"><button type="button" class="btn btn-primary btn-lg" id="cheatBtn">Transport</button>';
+			cheatInX=document.getElementById('cheat in x');
+			cheatInY=document.getElementById('cheat in y');
+			cheatBtn=document.getElementById('cheatBtn');
+			cheatBtn.addEventListener('click',cheatTransport);
+		}
+
+		canvas.addEventListener('click',mapBack);
+				
+	}
+			
+	function mapBack(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		//console.log('x: '+x+' y: '+y);
+		//console.log(minner);
+		var my=(5/424)*minner;
+		var my2=(62/424)*minner;
+		var mx=(24/424)*minner;
+		var mx2=(132/424)*minner;
+		if (  my<=y && y<=my2 && mx<=x && x<=mx2){
+			if (when==6){					
+				cheatBtn.removeEventListener('click',cheatTransport);
+				Cheats.innerHTML='';
+			}
+			goBack();
+		}		
+	}
+	
+	
+	
+	
+	
+	
+	//FUNCTIONS FOR CONTROLLING GAME EXPERIENCE
+	function killDirections(u,l,r,d){
+		if (u==1){canvas.removeEventListener('click',clickedUp);
+				  //window.removeEventListener('keydown',hitUp);
+				 }
+		if (d==1){canvas.removeEventListener('click',clickedDown);
+				 //window.removeEventListener('keydown',hitDown);
+				 }
+		if (l==1){canvas.removeEventListener('click',clickedLeft);
+				 //window.removeEventListener('keydown',hitLeft);
+				 }
+		if (r==1){canvas.removeEventListener('click',clickedRight);
+				 //window.removeEventListener('keydown',hitRight);
+				 }
+	}
+	
+	function killBag(){canvas.removeEventListener('click',topBag);}
+	function killMap(){canvas.removeEventListener('click',topMap);}
+	
+	
+	//TILE SCREEN AND CHARACTER SELECT FUNCTIONS 
+	function startClick(e){
+		//ONCE YOU CLICK TITLE SCREEN YOU GET TO CHOOSE BAG!
+		chooseBag()
+		document.removeEventListener('click',startClick);
+		window.removeEventListener('keypress',easterEgg);
+	}
+	
+	//CHOOSE BAG
+	function chooseBag(){
+		clearTimeout(timeHelp);
+		//UPDATE WHAT SCREEN ON FOR RESIZING
+		when=1;
+		health=3;
+		
+		canvasSetUp();
+			
+		//DRAW BAG OPTIONS
+		Draw('bagOptions');
+		
+		
+		//LISTEN FOR USERS CHOICE
+		canvas.addEventListener('click',chooseBagClick);
+			
+	}
+	function chooseBagClick(e){
+		
+		//WHERE DID THE USER CLICK
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		
+		//HELP TO FIND THE LOCATION OF STUFF
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+				
+		var wy=(150/401)*minner;
+		var wy2=(347/401)*minner;
+		var wx=(16/401)*minner;
+		var wx2=(176/401)*minner;
+				
+		var my=(148/401)*minner;
+		var my2=(345/401)*minner;
+		var mx=(228/401)*minner;
+		var mx2=minner;
+				
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			whichBag='purple';
+			canvas.removeEventListener('click',chooseBagClick);
+			Main.innerHTML='';
+			inGameOptions();
+			//welcome();
+			//console.log(whichBag);	
+		}
+		
+	
+		if (wy<=y && y<=wy2 && wx<=x && x<=wx2){
+			whichBag='green';
+			canvas.removeEventListener('click',chooseBagClick);
+			Main.innerHTML='';
+			inGameOptions();
+			//welcome();
+			//console.log('GREEN BAG');
+		}
+	
+	}	
+	function inGameOptions(){
+		clearTimeout(timeHelp);
+		//UPDATE WHAT SCREEN ON FOR RESIZING
+		when=4;
+		health=3;
+		
+		canvasSetUp();
+			
+		//DRAW BAG OPTIONS
+		Draw('levelOptions');
+		
+		
+		//LISTEN FOR USERS CHOICE
+		canvas.addEventListener('click',chooseLevelClick);
+		
+	}
+	function chooseLevelClick(e){
+		
+			//WHERE DID THE USER CLICK
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		
+		//HELP TO FIND THE LOCATION OF STUFF
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+		
+		var my=(131/401)*minner;
+		var my2=(170/401)*minner;
+		var mx=(28/401)*minner;
+		var mx2=(254/401)*minner;
+				
+		var wy=(201/401)*minner;
+		var wy2=(264/401)*minner;
+		var wx=(26/401)*minner;
+		var wx2=(199/401)*minner;
+				
+		var hy=(312/401)*minner;
+		var hy2=(343/401)*minner;
+		var hx=(24/401)*minner;
+		var hx2=(246/401)*minner;
+				
+		
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			whichLevel='times';
+			canvas.removeEventListener('click',chooseLevelClick);
+			Main.innerHTML='';
+			welcome();
+			//console.log(whichBag);	
+		}
+		
+	
+		if (wy<=y && y<=wy2 && wx<=x && x<=wx2){
+			whichLevel='add';
+			canvas.removeEventListener('click',chooseLevelClick);
+			Main.innerHTML='';
+			welcome();
+			//console.log('GREEN BAG');
+		}
+		
+		if (hy<=y && hy2>=hy2 && hx<=x && hx2>=x){
+			whichLevel='all';
+			canvas.removeEventListener('click',chooseLevelClick);
+			welcome();
+		}
+		
+	}
+	
+	
+	
+	//WELCOME TO THE FOREST
+	function welcome(){
+		canvasSetUp();
+		when=2;
+		Draw('welcomeToForest');
+		canvas.addEventListener('click',PlayOrTrain);	
+	}
+	function PlayOrTrain(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+				
+		var wy=(319/401)*minner;
+		var wy2=(370/401)*minner;
+		var wx=(243/401)*minner;
+		var wx2=minner;
+				
+		var my=(317/401)*minner;
+		var my2=(370/401)*minner;
+		var mx=(45/401)*minner;
+		var mx2=(184/401)*minner;
+				
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',PlayOrTrain);
+			Main.innerHTML='';
+			trainingLand();
+			//console.log('train');	
+		}
+				
+		if (wy<=y && y<=wy2 && wx<=x && x<=wx2){
+			canvas.removeEventListener('click',PlayOrTrain);
+			Main.innerHTML='';
+			inGame();
+			//console.log('Play');
+		}
+				
+	}
+	
+	function shooter(e){
+		if (e.keyCode==32 && inAttackBeast==1){
+			canvas.removeEventListener('keypress',shooter);
+			if (gameMessage=='shoot rock'){
+				gameMessage='rock thrown';
+			}
+			if (gameMessage=='shoot purp'){
+				gameMessage='purp thrown';
+			}
+			if (gameMessage=='shoot green'){
+				gameMessage='green thrown';
+			}
+			beastAttack();	
+		}
+	}
+	
+	function shoot(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+
+		//HELP TO FIND THE LOCATION OF STUFF
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+		
+		var my=(310/401)*minner;
+		var my2=(379/401)*minner;
+		var mx=(134/401)*minner;
+		var mx2=(275/401)*minner;
+				
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',shoot);
+			if (gameMessage=='shoot rock'){
+				gameMessage='rock thrown';
+			}
+			if (gameMessage=='shoot purp'){
+				gameMessage='purp thrown';
+			}
+			if (gameMessage=='shoot green'){
+				gameMessage='green thrown';
+			}
+			goBack();
+		}
+	}
+	
+	function needGameSling(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+				
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+		var my=(236/401)*minner;
+		var my2=(278/401)*minner;
+		var mx=(147/401)*minner;
+		var mx2=(207/401)*minner;
+		 
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',needGameSling);
+			//trainWhere=trainWhere+1;
+			bag[0]=1;
+			drawWorld(0);
+			killBag();
+			killMap();
+			killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+			Draw('slingAdded');
+			setTimeout(function(){
+				goBack();
+			},2000);
+			
+			
+		}
+		
+		else{
+			
+			if (inMap==0 && inBag==0){
+				killBag();
+				killMap();
+				gameMessage='been told about sling';
+				canvas.removeEventListener('click',needGameSling);
+				Draw('wizzyDanger');
+				setTimeout(function(){
+					Draw('wizzySling');
+					setTimeout(function(){
+						goBack();
+					},3000);
+				},3000);
+				
+			}
+		}
+		
+	};
+	
+	
+	
+	//TRAINING FUNCTIONS
+	function needSling(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		
+		
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		
+		
+				
+		//console.log('x: '+x+' y: '+y);
+		//console.log(minner);
+		var my=(39/499)*minner;
+		var my2=(110/499)*minner;
+		var mx=(272/499)*minner;
+		var mx2=(362/499)*minner;
+		 
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',needSling);
+			//trainWhere=trainWhere+1;
+			bag[0]=1;
+			drawWorld(0);
+			killBag();
+			killMap();
+			killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+			Draw('slingAdded');
+			setTimeout(function(){
+				goBack();
+			},2000);
+			
+			
+		}
+		else{
+			
+			if (inMap==0 && inBag==0){
+				killBag();
+				killMap();
+				Draw('wizzyDanger');
+				if (wizzyTimer!=null){
+					window.clearTimeout(wizzyTimer);
+					wizzyTimer=null;
+				}
+				if (wizzyTimer2!=null){
+					window.clearTimeout(wizzyTimer2);
+					wizzyTimer2=null;
+				}
+				if (wizzyTimer==null && wizzyTimer2==null){
+					wizzyTimer=setTimeout(function(){
+						Draw('wizzySling');
+						wizzyTimer2=setTimeout(function(){
+							drawWorld(0);
+							killDirections(u,l,r,d);
+							Draw('sling');
+							Draw('slingArrow');
+						},3000);
+					},3000);
+				}
+			}
+		}	
+	};
+	
+	
+	function PickUpPotion(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+			
+		console.log('x: '+x+' y: '+y);
+		console.log('minner: '+minner);
+		var my=(188/401)*minner;
+		var my2=(278/401)*minner;
+		var mx=(171/401)*minner;
+		var mx2=(199/401)*minner;
+			
+			
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',PickUpPotion);
+			//trainWhere=trainWhere+1;
+			if (gameMessage=='purple potion'){
+				bag[3]=bag[3]+1;
+			}
+			if (gameMessage=='green potion'){
+				bag[2]=bag[2]+1;
+			}
+			drawWorld(0);
+			killBag();
+			killMap();
+			killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+			gameMessage2='';
+			Draw('potionAdded');
+			currentScreen=[];
+			setTimeout(function(){
+				goBack();
+			},2000);
+			
+			
+		}
+		
+	}
+	
+	function PickUpRock(e){
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+			
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+		var my=(243/401)*minner;
+		var my2=(276/401)*minner;
+		var mx=(162/401)*minner;
+		var mx2=(205/401)*minner;
+			
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',PickUpRock);
+			//trainWhere=trainWhere+1;
+			bag[1]=bag[1]+1;
+			drawWorld(0);
+			killBag();
+			killMap();
+			killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+			gameMessage2='';
+			Draw('rockAdded');
+			currentScreen=[];
+			setTimeout(function(){
+				goBack();
+			},2000);
+			
+			
+		}
+	}
+	
+	function needRock(e){
+		clearAllTimers();
+		
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+			
+		//console.log('x: '+x+' y: '+y);
+		//console.log(minner);
+		var my=(241/401)*minner;
+		var my2=(285/401)*minner;
+		var mx=(303/401)*minner;
+		var mx2=(353/401)*minner;
+			
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',needRock);
+			//trainWhere=trainWhere+1;
+			bag[1]=1;
+			drawWorld(0);
+			killBag();
+			killMap();
+			killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+			Draw('rockAdded');
+			setTimeout(function(){
+				goBack();
+			},2000);
+			
+			
+		}
+		else{
+			
+			if (inMap==0 && inBag==0){
+				killBag();
+				killMap();
+				trainingMessage[1]='been told about rock';
+				//canvas.removeEventListener('click',needRock);
+				Draw('wizzyDanger');
+				clearAllTimers();
+				wizzyTimer2=setTimeout(function(){
+					Draw('wizzyRock');
+					wizzyTimer=setTimeout(function(){
+						drawWorld(0);
+						killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+						Draw('rock1');
+						Draw('rockArrow');
+					},3000);
+				},3000);
+				
+			}
+		}
+		
+		
+		
+	};
+	
+	
+	
+	function goBeastAttack(){
+		Main.innerHTML='<div class="container"><div class="center" align="center"><h3>Loading ...</h3></div></div><div class="container"><div class="center"><div class="spinner-border text-primary" style="width: 8rem; height: 8rem;" role="status"><span class="sr-only">Loading...</span></div></div></div>';
+		timehelp=setTimeout(beastAttack,10);
+	
+	}
+	
+	function wizzyHelloTraining(){
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		
+		if (wizzyHelloTimer!=null){
+			window.clearTimeout(wizzyHelloTimer);
+			wizzyHelloTimer=null;
+		}
+		if (wizzyTimer!=null){
+			window.clearTimeout(wizzyTimer);
+		}
+		if (wizzyTimer2!=null){
+			window.clearTimeout(wizzyTimer2);
+			wizzyTimer2=null;
+		}
+		if (wizzyHelloTimer==null && wizzyTimer==null && wizzyTimer2==null){
+			wizzyHelloTimer=setTimeout(function(){
+				Draw('welcomeTrain');
+				wizzytimer=setTimeout(function(){
+					Draw('wizzyExplore');
+					wizzyTimer2=setTimeout(function(){
+						drawWorld(0);
+						killDirections(u,l,r,d);
+						Draw('sling');
+						canvas.addEventListener('click',needSling);
+					},3000);
+				},3000);
+			},1000);
+		}	
+		
+	}
+	
+	function trainingLand(){
+		Main.innerHTML='<div class="container"><div class="center" align="center"><h3>Loading ...</h3></div></div><div class="container"><div class="center"><div class="spinner-border text-primary" style="width: 8rem; height: 8rem;" role="status"><span class="sr-only">Loading...</span></div></div></div>';
+		timehelp=setTimeout(training,15);
+	}
+	
+	function training(){
+		if (when!=3){
+			//SET DATA FOR TRAINING
+			whereBeen=trainingBeen;
+			Locus=trainingLocus;
+			theLook=trainingLook;
+			mapXSize=trainingXSize;
+			mapYSize=trainingYSize;
+			mapHere=trainingHere;
+			mapCover=trainingCover;
+			trainingMessage=['','','need bunny','training','need turt'];
+			beastCount=[0,0];
+			turtCount=[0,0];
+			bag=[0,0,0,0];
+			whichMap='trainMap';
+		}
+		
+		//UPDATE WHERE IN PROCESS
+		when=3;
+		inBag=0;
+		inMap=0;
+		inAttackBeast=0;
+		inAttackTurt=0;
+		
+		
+	
+	
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		
+		if (timeHelp!=null){
+			clearTimeout(timeHelp);
+			timeHelp=null;
+		}
+		if (timeBeast!=null){
+			window.clearTimeout(timeBeast);
+			timeBeast=null
+		}
+		if (animateId!=null){
+				window.cancelAnimationFrame(animateId);
+				animateId=null;
+				//console.log('weird cancel frame');
+			}
+		
+		
+		//KEEP THE PLAYER MOVING!
+		if (timeHelp!=null){
+			window.clearTimeout(timeHelp);
+			timeHelp=null;
+			
+		
+		}
+		if (timeHelp==null){
+			timeHelp=setTimeout(function(){
+				if (inBag==0 && inMap==0){
+					trainingMessage[0]='bored';
+					goBack();
+				}
+			},4000);
+		}
+		if (trainingMessage[0]=='bored'){
+			trainingMessage[0]='not bored';
+			Draw('exploreArrow');
+		}
+		
+		//SET UP CANVAS
+		canvasSetUp();
+		
+		//DRAW MAIN SCREEN
+		drawWorld(0);
+		
+		//SAY HELLO AND MAKE THEM PICK UP THE SLINGSHOT
+		if (wx==0 && wy==0 && bag[0]==0){
+			if (timeHelp!=null){
+				window.clearTimeout(timeHelp);
+				timeHelp=null;
+			}
+			//SET UP CANVAS
+		canvasSetUp();
+		
+		//DRAW MAIN SCREEN
+		drawWorld(0);
+			killDirections(u,l,r,d)
+			killBag();
+			killMap();
+			Draw('sling');
+			wizzyHelloTraining();
+		}
+		
+		
+		//MAKE THEM PICK UP ROCK
+		if (( (wx==1 && wy==0) || (wx==0 && wy==1) ) && bag[1]==0 && gameMessage!='beat turt' && gameMessage!='turt beat'){
+			if (timeHelp!=null){
+				window.clearTimeout(timeHelp);
+				timeHelp=null;
+			}
+			clearAllTimers();
+			killDirections(u,l,r,d);
+			Draw('rock1');
+			canvas.addEventListener('click',needRock);
+		}
+		
+		
+		//BEAST ATTACKS!
+		if (((wx==0 && wy==0) || (wx==1 && wy==1)) && bag[0]!=0 && bag[1]!=0 && trainingMessage[2]=='need bunny' && didMove==0){
+			if (timeHelp!=null){
+				window.clearTimeout(timeHelp);
+				timeHelp=null;
+			}
+			clearAllTimers();
+			beastAttack();
+		}
+		
+		//console.log(gameMessage);
+		
+		//FAILED TO KILL BEAST
+		if (gameMessage=='beast beat'){
+			clearAllTimers();
+			if (timeHelp!=null){
+				window.clearTimeout(timeHelp);
+				timeHelp=null;
+			}
+			setTimeout(function(){
+				gameMessage='';
+				drawWorld(0);
+				killBag();
+				killMap();
+				killDirections(u,l,r,d);
+				setTimeout(function(){
+					Draw('wizzyCareBunny');
+					setTimeout(function(){
+						drawWorld(0);
+						killMap();
+						killBag();
+						killDirections(u,l,r,d);
+						Draw('wizzyFaster');
+						setTimeout(function(){
+							trainingMessage[2]='';
+							drawWorld(0);
+							killMap();
+							killBag();
+							killDirections(u,l,r,d);
+							Draw('wizzyCreatures');
+							setTimeout(function(){
+								goBack();
+							},3000);
+						},4000);
+					},3000);
+				},500);
+					
+			},400);
+		}
+		
+		//KILLED BEAST!
+		if (gameMessage=='beat beast'){
+			clearTimeout(timeHelp);
+			setTimeout(function(){
+				gameMessage='';
+				drawWorld(0);
+				killBag();
+				killMap();
+				killDirections(u,l,r,d);
+				setTimeout(function(){
+					Draw('wizzyBunnyJob');
+					setTimeout(function(){
+						trainingMessage[2]='';
+						drawWorld(0);
+						killMap();
+						killBag();
+						killDirections(u,l,r,d);
+						Draw('wizzyCreatures');
+						setTimeout(function(){
+							goBack();
+						},4000);
+					},3000);
+				},500);
+					
+			},400);
+		}
+		
+	
+		//TURTLE ATTACK!
+		if ( ((wx==1 && wy==0) || (wx==0 && wy==1)) && trainingMessage[4]=='need turt' && trainingMessage[2]==''){
+			clearTimeout(timeHelp);
+			turtAttack();
+		
+		}
+		
+		//KILLED TURTLE!
+		if (gameMessage=='beat turt'){
+			clearTimeout(timeHelp);
+			setTimeout(function(){
+				gameMessage='';
+				drawWorld(0);
+				killBag();
+				killMap();
+				killDirections(u,l,r,d);
+				setTimeout(function(){
+					Draw('wizzyBeatTurt');
+					setTimeout(function(){
+						trainingMessage[2]='';
+						drawWorld(0);
+						killMap();
+						killBag();
+						killDirections(u,l,r,d);
+						Draw('wizzyReady');
+						document.addEventListener('click',function(){inGame();});
+					},3000);
+				},500);
+					
+			},400);
+		
+		}
+		
+		if (gameMessage=='turt beat'){
+			clearTimeout(timeHelp);
+			setTimeout(function(){
+				gameMessage='';
+				drawWorld(0);
+				killBag();
+				killMap();
+				killDirections(u,l,r,d);
+				setTimeout(function(){
+					Draw('wizzyTurtBeat');
+					setTimeout(function(){
+						trainingMessage[2]='';
+						drawWorld(0);
+						killMap();
+						killBag();
+						killDirections(u,l,r,d);
+						Draw('wizzyReady');
+						document.addEventListener('click',function(){inGame();});
+					},3000);
+				},1000);
+					
+			},400);
+		
+		}
+		
+		
+		
+		
+		
+		
+	}
+	
+	
+	function drawIt(){
+		console.log(theImages);
+		if (theImages==76){
+			console.log('poop');
+			canvasSetUp();
+			drawWorld(0);
+		}
+	};
+	
+	//THE GAMES MAIN FUNCTION
+	function inGame(){
+		MainGame();
+		
+	}
+	
+	
+	function MainGame(){
+		if (when!=5){
+			//SET DATA FOR TRAINING
+			whereBeen=forestBeen;
+			Locus=forestLocus;
+			theLook=forestLook;
+			mapXSize=forestXSize;
+			mapYSize=forestYSize;
+			mapHere=forestHere;
+			mapCover=forestCover;
+			trainingMessage=['','','','',''];
+			beastCount=[0,0];
+			turtCount=[0,0];
+			bag=[0,0,0,0];
+			whereAt=[0,1];
+			whichMap='forestMap';
+			gameMessage='';
+			health=3;
+		}
+		
+		if (GOD==1){
+			bag[1]=10;
+			bag[2]=10;
+			bag[3]=10;
+			health=3;
+		};
+		
+		//UPDATE WHERE IN PROCESS
+		when=5;
+
+		
+		//NEED FOR GAME:
+		inBag=0;
+		inMap=0;
+		inAttackBeast=0;
+		inAttackTurt=0;
+		inAttackDragon=0;
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		
+		//console.log('x: '+wx+' y: '+wy);
+		
+		
+		
+		
+		drawIt();
+		
+		
+		
+		// ROB RESET EVERY TIMER EVER RIGHT HERE MAYBE EVEN MAKE A FUNCTION TO DO IT!!!
+		if (timeBeast!=null){
+			window.clearTimeout(timeBeast);
+			timeBeast=null
+		}
+		clearTimeout(timeHelp);
+		
+		
+		
+		if (wx==0 && wy==1 && bag[0]==0 && theImages==76 && GOD!=1){
+			//console.log('gameMessage: '+gameMessage);
+			clearTimeout(timeStart);
+			
+		
+			clearTimeout(timeHelp);
+			canvasSetUp();
+			drawWorld(0);
+			Draw('gameSling');
+			killDirections(u,l,r,d);
+			killMap();
+			killBag();
+			if (gameMessage=='been told about sling'){
+				Draw('gameSlingClick');
+				canvas.addEventListener('click',needGameSling);
+			}
+			
+			if (gameMessage=='wizzy said hello'){
+				canvas.addEventListener('click',needGameSling);
+			}
+			
+			if (gameMessage==''){
+				
+				killMap();
+				killBag();
+				setTimeout(function(){
+					Draw('wizzyWelcome');
+					setTimeout(function(){
+						Draw('wizzyFind');
+						setTimeout(function(){
+							Draw('wizzyDefeat');
+							setTimeout(function(){
+								Draw('wizzyBecome');
+								setTimeout(function(){
+									gameMessage='wizzy said hello';
+									goBack();
+								},3000);
+							},3000);
+							
+						},3000);
+					
+					},3000);
+				},1000);
+			}
+		}
+		
+		
+		if (didMove==1){
+			if (currentScreen[0]=='gameRock'){
+				canvas.addEventListener('click',PickUpRock);
+			}
+			if (currentScreen[0]=='gamePurp'){
+				canvas.addEventListener('click',PickUpPotion);
+			}
+			if (currentScreen[0]=='gameGreen'){
+				canvas.addEventListener('click',PickUpPotion);
+			}
+			doBefore();
+		}
+		//console.log('didMove: '+didMove);
+		if (didMove==0){
+
+		
+			//NOT DRAGON LEVEL
+			if (wx!=4 || wy!=6){
+				
+
+				//CREATE A RANDOM NUMBER TO ALWAYS DECIDE WHAT TO DO:
+
+
+				//console.log(bag);
+
+				//THREE CHOICES 
+				// 1=DO NOTHING
+				// 2=BUNNY ATTACK
+				// 3=TURTLE ATTACK
+				if(whereAt[0]!=0 || whereAt[1]!=1 ){
+					var rando=Math.floor((Math.random()*3))+1;
+					console.log('rado thing happen: '+rando);
+					if (rando==1){
+						gimmeObject();
+						if (gameMessage2=='purp drawn'){
+							currentScreen=['gamePurp'];
+						}
+						if (gameMessage2=='green drawn'){
+							currentScreen=['gameGreen'];
+						}
+						if (gameMessage2=='rock drawn'){
+							currentScreen=['gameRock'];
+						}
+						if (bag[1]==0 && bag[2]==0 && bag[3]==0){
+								//MAKE THEM PICK UP ROCK
+							killMap();
+							killBag();
+							killDirections(u,l,r,d);
+							if (gameMessage2=='rock drawn'){
+								currentScreen=['gameRock'];
+								canvas.removeEventListener('click',PickUpRock);
+	
+							}
+							if (gameMessage2=='purp drawn' || gameMessage2=='green drawn'){
+								if (gameMessage2=='purp drawn'){
+									currentScreen=['gamePurp'];
+								}
+								if (gameMessage2=='green drawn'){
+									currentScreen=['gameGreen'];
+								}
+								canvas.removeEventListener('click',PickUpPotion);
+								
+							}
+							canvas.addEventListener('click',seriouslyNeedDat);
+
+
+						}
+						
+						didMove=1;
+					}
+
+					if (rando==2 ){
+						didMove=1;
+						console.log('pooper scooper');
+						killDirections(u,l,r,d);
+						gameMessage3='want to bunny!';
+						if (bag[1]==0 && bag[2]==0 && bag[3]==0){
+								//MAKE THEM PICK UP ROCK
+							
+							
+							killMap();
+							killBag();
+							gimmeObject();
+							if (gameMessage2=='rock drawn'){
+								currentScreen=['gameRock'];
+								canvas.removeEventListener('click',PickUpRock);
+	
+							}
+							if (gameMessage2=='purp drawn' || gameMessage2=='green drawn'){
+								if (gameMessage2=='purp drawn'){
+									currentScreen=['gamePurp'];
+								}
+								if (gameMessage2=='green drawn'){
+									currentScreen=['gameGreen'];
+								}
+								canvas.removeEventListener('click',PickUpPotion);
+								
+							}
+							canvas.addEventListener('click',seriouslyNeedDat);
+
+
+						}
+						if (bag[1]!=0 || bag[2]!=0 || bag[3]!=0){
+							killDirections(u,l,r,d);
+							gameMessage='';
+							beastAttack();
+						}
+					}
+					if (rando==3){
+						killDirections(u,l,r,d);
+						gameMessage='';
+						turtAttack();
+					}
+				}
+
+
+			}
+
+
+			//DRAGON LEVEL
+			if (wx==4 && wy==6){
+				dragonAttack()
+				//DO DRAGON ATTACK
+			}
+		}
+		
+	}
+	
+	
+	function seriouslyNeedDat(e){
+		//console.log('gameMessage: '+gameMessage);
+		var x=e.clientX-elemLeft;
+		var y=e.clientY-elemTop;
+		
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		
+			
+		//console.log('x: '+x+' y: '+y);
+		//console.log('minner: '+minner);
+		var my=(226/401)*minner;
+		var my2=(278/401)*minner;
+		var mx=(147/401)*minner;
+		var mx2=(207/401)*minner;
+		 
+				
+		if (my<=y && y<=my2 && mx<=x && x<=mx2){
+			canvas.removeEventListener('click',seriouslyNeedDat);
+			currentScreen=[];
+			//trainWhere=trainWhere+1;
+			if (gameMessage2=='rock drawn'){
+				currentScreen=[];
+				bag[1]=bag[1]+1;
+				drawWorld(0);
+				killBag();
+				killMap();
+				killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+				Draw('rockAdded');
+			}
+			if (gameMessage2=='purp drawn'){
+				currentScreen=[];
+				bag[3]=bag[3]+1;
+				drawWorld(0);
+				killBag();
+				killMap();
+				killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+				Draw('potionAdded');
+			}
+			if (gameMessage2=='green drawn'){
+				currentScreen=[];
+				bag[2]=bag[2]+1;
+				drawWorld(0);
+				killBag();
+				killMap();
+				killDirections(Locus[whereAt[0]][whereAt[1]][0],Locus[whereAt[0]][whereAt[1]][1],Locus[whereAt[0]][whereAt[1]][2],Locus[whereAt[0]][whereAt[1]][3]);
+				Draw('potionAdded');
+			}
+			
+			setTimeout(function(){
+				gameMessage2='';
+				if (gameMessage3=='want to bunny!'){
+					gameMessage3='';
+					killMap();
+					killBag();
+					killDirections(u,l,r,d);
+					console.log('now have bunny jump in')
+					if (animateId!=null){
+						window.cancelAnimationFrame(animateId);
+						animateId=null;
+						//console.log('weird cancel frame');
+					}
+					animateGo([],[],[['bunnyHop1'],['bunnyHop2'],['bunnyHop3'],['bunnyHop4']],300,['beastAttack()'],1);	
+				}
+				if (gameMessage3!='want to bunny!'){
+					gameMessage3='';
+					drawWorld(0);
+				}
+				//goBack();
+			},2000);
+			
+			
+		}
+		
+		
+		else{
+			
+			if (inMap==0 && inBag==0){
+				killBag();
+				killMap();
+				Draw('wizzyDanger');
+				setTimeout(function(){
+					drawWorld(0);
+					killBag();
+					killMap();
+					killDirections(u,l,r,d);
+					doBefore();
+					Draw('gameSlingClick');
+				},3000);
+				
+			}
+		}
+		
+	}
+	
+	
+	
+	
+	
+	function gimmeObject(){
+		
+		//AT LEAST GIVE THE PLAYER A CHANCE TO DEFEND THEMSELVES...
+			
+		var randomObject=Math.floor((Math.random()*3)+1);
+		//console.log('randomObject: '+randomObject);
+				//1=Rock
+				//2=PURPLE POTION
+				//3=GREEN POTION
+
+			if (randomObject==1){
+				Draw('gameRock');
+				canvas.addEventListener('click',PickUpRock);
+				gameMessage2='rock drawn';
+				//PLACE AND DETECT ROCK	
+			}
+			if (randomObject==2){
+				Draw('gamePurp');
+				gameMessage='purple potion';
+				gameMessage2='purp drawn';
+				canvas.addEventListener('click',PickUpPotion);
+					//PLACE AND DETECT PURPLE POTION
+			}
+			if (randomObject==3){
+				Draw('gameGreen');
+				gameMessage='green potion';
+				gameMessage2='green drawn';
+				canvas.addEventListener('click',PickUpPotion);
+					//PLACE AND DETECT GREEN POTION
+			}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//HIDDEN EASTER EGG STUFF (AT FIRST JUST A WAY TO TEST)
+	
+	function easterEgg(e){
+		if (hiddenMessage.length<8){
+			hiddenMessage=hiddenMessage+e.key;
+			console.log(hiddenMessage)
+		}
+		else{
+			hiddenMessage='';
+		}
+		if (hiddenMessage=='god mode'){
+			document.removeEventListener('click',startClick);
+			window.removeEventListener('keypress',easterEgg);
+			GOD=1;
+			inTest();
+			
+		}
+	}
+	
+	function inTest(){
+	console.log('now in godmode');
+		console.log('worked');
+		whereBeen=forestBeen;
+		Locus=forestLocus;
+		theLook=forestLook;
+		mapXSize=forestXSize;
+		mapYSize=forestYSize;
+		mapHere=forestHere;
+		mapCover=forestCover;
+		holder=0;
+		trainingMessage[3]='';
+		whichMap='forestMap';
+		whereAt=[0,1];
+		gameMessage='';
+		whichLevel='all';
+		bag[0]=1;
+		bag[1]=10;
+		bag[2]=10;
+		bag[3]=10;
+		whichBag='purple';
+		when=5;
+		inGame();
+	}
+	
+	
+	
+	
+	window.addEventListener('keypress',easterEgg);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	}
+	}
+	}
+	}
+	}
+	
+	
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	
+	
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	
+	
+	}
+	}
+	}
+	}
+	}
+	}
+	}
+	
+	
+	
+	
+	
+	function inTest2(){
+	
+		if (when!=6){
+			whereBeen=eggBeen;
+			Locus=eggLocus;
+			theLook=eggLook;
+			mapXSize=eggXSize;
+			mapYSize=eggYSize;
+			mapHere=eggHere;
+			mapCover=eggCover;
+			holder=0;
+			trainingMessage[3]='';
+			whichMap='forestMap';
+			whereAt=[0,1];
+			gameMessage='';
+			whichLevel='all';
+		}
+		 //FOR GOD MODE ONLY:
+		
+		bag[0]=1;
+		/*
+		bag[1]=10;
+		bag[2]=10;
+		bag[3]=10;
+		*/
+		
+		whichBag='purple';
+		when=6;
+		
+		
+		
+		//NEED FOR GAME:
+		inBag=0;
+		inMap=0;
+		inAttackBeast=0;
+		inAttackTurt=0;
+		inAttackDragon=0;
+		var wx=whereAt[0];
+		var wy=whereAt[1];
+		var u=Locus[wx][wy][0];
+		var l=Locus[wx][wy][1];
+		var r=Locus[wx][wy][2];
+		var d=Locus[wx][wy][3];
+		
+		console.log('x: '+wx+' y: '+wy);
+		
+		canvasSetUp();
+		drawWorld(0);
+		
+		
+		
+		
+		
+		
+		
+		
+		if (timeBeast!=null){
+			window.clearTimeout(timeBeast);
+			timeBeast=null
+		}
+		clearTimeout(timeHelp);
+		
+		
+		//FOR TESTING A GIVEN FUNCTION:
+		/*
+		if (didMove==0){
+			//beastAttack();
+			turtAttack();
+			//dragonAttack();
+		}
+		*/
+		
+		
+		if (timeBeast!=null){
+			window.clearTimeout(timeBeast);
+			timeBeast=null
+		}
+		clearTimeout(timeHelp);
+		
+		
+		if (wx==0 && wy==1 && bag[0]==0){
+			//console.log('gameMessage: '+gameMessage);
+			clearTimeout(timeHelp);
+			Draw('gameSling');
+			killDirections(u,l,r,d);
+			if (gameMessage=='been told about sling'){
+				Draw('gameSlingClick');
+				canvas.addEventListener('click',needGameSling);
+			}
+			
+			if (gameMessage=='wizzy said hello'){
+				canvas.addEventListener('click',needGameSling);
+			}
+			
+			if (gameMessage==''){
+				
+				killMap();
+				killBag();
+				setTimeout(function(){
+					Draw('wizzyWelcome');
+					setTimeout(function(){
+						Draw('wizzyFind');
+						setTimeout(function(){
+							Draw('wizzyDefeat');
+							setTimeout(function(){
+								Draw('wizzyBecome');
+								setTimeout(function(){
+									gameMessage='wizzy said hello';
+									goBack();
+								},3000);
+							},3000);
+							
+						},3000);
+					
+					},3000);
+				},1000);
+			}
+		}
+		
+		
+		if (didMove==1){
+			if (currentScreen[0]=='gameRock'){
+				canvas.addEventListener('click',PickUpRock);
+			}
+			if (currentScreen[0]=='gamePurp'){
+				canvas.addEventListener('click',PickUpPotion);
+			}
+			if (currentScreen[0]=='gameGreen'){
+				canvas.addEventListener('click',PickUpPotion);
+			}
+			doBefore();
+		}
+		//console.log('didMove: '+didMove);
+		if (didMove==0){
+
+		
+			//NOT DRAGON LEVEL
+			if (wx!=4 || wy!=6){
+				
+
+				//CREATE A RANDOM NUMBER TO ALWAYS DECIDE WHAT TO DO:
+
+
+				//console.log(bag);
+
+				//THREE CHOICES 
+				// 1=DO NOTHING
+				// 2=BUNNY ATTACK
+				// 3=TURTLE ATTACK
+				if(whereAt[0]!=0 || whereAt[1]!=1 ){
+					var rando=Math.floor((Math.random()*3)+1);
+					//console.log('rado thing happen: '+rando);
+					if (rando==1){
+						gimmeObject();
+						if (gameMessage2=='purp drawn'){
+							currentScreen=['gamePurp'];
+						}
+						if (gameMessage2=='green drawn'){
+							currentScreen=['gameGreen'];
+						}
+						if (gameMessage2=='rock drawn'){
+							currentScreen=['gameRock'];
+						}
+						if (bag[1]==0 && bag[2]==0 && bag[3]==0){
+								//MAKE THEM PICK UP ROCK
+							killMap();
+							killBag();
+							killDirections(u,l,r,d);
+							if (gameMessage2=='rock drawn'){
+								currentScreen=['gameRock'];
+								canvas.removeEventListener('click',PickUpRock);
+	
+							}
+							if (gameMessage2=='purp drawn' || gameMessage2=='green drawn'){
+								if (gameMessage2=='purp drawn'){
+									currentScreen=['gamePurp'];
+								}
+								if (gameMessage2=='green drawn'){
+									currentScreen=['gameGreen'];
+								}
+								canvas.removeEventListener('click',PickUpPotion);
+								
+							}
+							canvas.addEventListener('click',seriouslyNeedDat);
+
+
+						}
+						
+						didMove=1;
+					}
+
+					if (rando==2 ){
+						didMove=1;
+						killDirections(u,l,r,d);
+						gameMessage3='want to bunny!';
+						if (bag[1]==0 && bag[2]==0 && bag[3]==0){
+								//MAKE THEM PICK UP ROCK
+							
+							
+							killMap();
+							killBag();
+							gimmeObject();
+							if (gameMessage2=='rock drawn'){
+								currentScreen=['gameRock'];
+								canvas.removeEventListener('click',PickUpRock);
+	
+							}
+							if (gameMessage2=='purp drawn' || gameMessage2=='green drawn'){
+								if (gameMessage2=='purp drawn'){
+									currentScreen=['gamePurp'];
+								}
+								if (gameMessage2=='green drawn'){
+									currentScreen=['gameGreen'];
+								}
+								canvas.removeEventListener('click',PickUpPotion);
+								
+							}
+							canvas.addEventListener('click',seriouslyNeedDat);
+
+
+						}
+						if (bag[1]!=0 || bag[2]!=0 || bag[3]!=0){
+							killDirections(u,l,r,d);
+							gameMessage='';
+							beastAttack();
+						}
+					}
+					if (rando==3){
+						killDirections(u,l,r,d);
+						gameMessage='';
+						turtAttack();
+					}
+				}
+
+
+			}
+
+
+			//DRAGON LEVEL
+			if (wx==4 && wy==6){
+				dragonAttack()
+				//DO DRAGON ATTACK
+			}
+		}
+				
+	
+	
+	}
+	
+		
+</script>
+	
+
+</body>
+	
+	
+	
+	
+</html>
