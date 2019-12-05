@@ -1,3 +1,1 @@
-# math_wizard
-
-game for children to practice arithmetic
+# math_wizard game for children to practice arithmetic
